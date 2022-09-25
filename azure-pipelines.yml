@@ -37,6 +37,7 @@ steps:
     
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: '$(Pipeline.Workspace)'
+    targetPath: '$(Pipeline.Workspace)\'
     artifactType: 'pipeline'
     artifactName: 'drop'
+    archiveFilePatterns: '**/SimBPMN Visualizer*etup.exe'

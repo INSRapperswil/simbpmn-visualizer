@@ -19,7 +19,15 @@ steps:
     npm install
     npm run make
   displayName: 'npm install and make'
+
+- task: CmdLine@2
+  inputs:
+    script: |
+      echo dir
+      dir /s
+      
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: '$(Build.SourcesDirectory)\out\**'
     publishLocation: 'pipeline'
+    

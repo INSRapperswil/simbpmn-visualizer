@@ -17,7 +17,7 @@ steps:
 
 - script: |
     npm install
-    npm make
+    npm run make
   displayName: 'npm install and make'
 
 - task: CmdLine@2

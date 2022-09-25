@@ -25,9 +25,10 @@ steps:
     script: |
       echo dir
       dir /s
-      
+    workingDirectory: '$(Build.BinariesDirectory)'
+
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: '$(Build.SourcesDirectory)\out\**'
+    targetPath: '$(Build.BinariesDirectory)\out\**'
     publishLocation: 'pipeline'
     

@@ -1,0 +1,211 @@
+{
+    "name": "SimBPMN",
+    "prefix": "simBPMN",
+    "uri": "http://simBPMN",
+    "xml": {
+      "tagAlias": "lowerCase"
+    },
+    "associations": [],
+    "types": [
+      {
+        "name": "Logic",
+        "superClass": [
+          "Element"
+        ],
+        "properties": [
+          {
+            "name": "content",
+            "type": "String",
+            "isAttr": true
+          }
+        ]
+      },
+      {
+        "name": "Properties",
+        "superClass": [
+          "Element"
+        ],
+        "meta": {
+          "allowedIn": [ "*" ]
+        },
+        "properties": [
+          {
+            "name": "values",
+            "type": "Property",
+            "isMany": true
+          }
+        ]
+      },
+      {
+        "name": "Property",
+        "superClass": [
+          "Element"
+        ],
+        "properties": [
+          {
+            "name": "id",
+            "type": "String",
+            "isAttr": true
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "isAttr": true
+          },
+          {
+            "name": "value",
+            "type": "String",
+            "isAttr": true
+          }
+        ]
+      },
+      {
+        "name": "Attachments",
+        "superClass": [
+          "Element"
+        ],
+        "meta": {
+          "allowedIn": [ "*" ]
+        },
+        "properties": [
+          {
+            "name": "values",
+            "type": "Attachment",
+            "isMany": true
+          }
+        ]
+      },
+      {
+        "name": "Attachment",
+        "superClass": [
+          "Element"
+        ],
+        "properties": [
+          {
+            "name": "id",
+            "type": "String",
+            "isAttr": true
+          },
+          {
+            "name": "attachmentPath",
+            "type": "String",
+            "isAttr": true
+          },
+          {
+            "name": "description",
+            "type": "String",
+            "isAttr": true
+          }
+        ]
+      },
+      {
+        "name": "Requirements",
+        "superClass": [
+          "Element"
+        ],
+        "meta": {
+          "allowedIn": [ "*" ]
+        },
+        "properties": [
+          {
+            "name": "values",
+            "type": "Requirement",
+            "isMany": true
+          }
+        ]
+      },
+      {
+        "name": "Requirement",
+        "superClass": [
+          "Element"
+        ],
+        "properties": [
+          {
+            "name": "id",
+            "type": "String",
+            "isAttr": true
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "isAttr": true
+          },
+          {
+            "name": "description",
+            "type": "String",
+            "isAttr": true
+          }
+        ]
+      },
+      {
+        "name": "Validations",
+        "superClass": [
+          "Element"
+        ],
+        "meta": {
+          "allowedIn": [ "*" ]
+        },
+        "properties": [
+          {
+            "name": "values",
+            "type": "Validation",
+            "isMany": true
+          }
+        ]
+      },
+      {
+        "name": "Validation",
+        "superClass": [
+          "Element"
+        ],
+        "properties": [
+          {
+            "name": "id",
+            "type": "String",
+            "isAttr": true
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "isAttr": true
+          },
+          {
+            "name": "description",
+            "type": "String",
+            "isAttr": true
+          }
+        ]
+      },
+      {
+        "name": "LogicObject",
+        "isAbstract": true,
+        "superClass": [
+          "bpmn:FlowNode"
+        ]
+      },
+      {
+        "name": "Queue",
+        "superClass": [
+          "LogicObject"
+        ],
+        "properties": [
+        ]
+      },
+      {
+        "name": "Server",
+        "superClass": [
+          "LogicObject"
+        ],
+        "properties": [
+        ]
+      },
+      {
+        "name": "Output",
+        "superClass": [
+          "LogicObject"
+        ],
+        "properties": [
+        ]
+      }
+    ]
+  }

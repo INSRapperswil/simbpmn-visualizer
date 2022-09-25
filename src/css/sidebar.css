@@ -1,0 +1,89 @@
+#files{
+    font-size: 10pt;
+    color: #fff;
+    /*background: #00796B;*/
+    background: #00799B;
+}
+
+ul{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.listItemLabel{
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: 10px;
+    border: 1px solid #fff;
+    border-bottom: none;
+}
+
+.listItemLabel:hover{
+    background: #FFC107;
+}
+
+.listItemLabel.last{
+    border-bottom: 1px solid #fff;
+}
+
+.childListItem{
+    padding: 10px;
+    /*background: #009688;*/
+    background: #00a8d6;
+    cursor: pointer;
+}
+
+.childListItem:hover{
+    background: #FFC107;
+}
+
+
+.sidebar_filelist{
+    position: absolute;
+    left: -9999px;
+}
+
+.sidebar_filelist ~ ul{
+    height: 0;
+    transform: scaleY(0);
+}
+
+.sidebar_filelist:checked ~ ul{
+    height: 100%;
+    transform-origin: top;
+    transition: transform .2s ease-out;
+    transform: scaleY(1);
+}
+
+#search{
+    display: block;
+    padding: 10px;
+    width:100%;
+}
+
+#sidebar_title{
+    padding: 10px;
+    width:100%;
+    overflow: hidden;
+}
+
+#sidebar{
+    min-width: 200px;
+}
+
+.listDeleteButton:before{
+    content: "\2715";
+
+}
+
+.listDeleteButton{
+    display: inline-block;
+    width:10px;
+    height:10px;
+}
+
+.listDeleteButton:hover{
+    color:red;
+}

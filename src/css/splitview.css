@@ -1,0 +1,26 @@
+.resizer {
+    background-color: #cbd5e0;
+}
+
+#horizontalResizer {
+    height: 100%;
+    order: 2;
+    cursor: ew-resize;
+    width: 3px;
+}
+
+#verticalResizer {
+    cursor: ns-resize;
+    width: 100%;
+    height: 3px;
+}
+
+#js-canvas {
+    height: 100%;
+}
+
+#verticalResizer,
+#js-simbpmncanvas {
+    display: none;
+    background: lightgray;
+}

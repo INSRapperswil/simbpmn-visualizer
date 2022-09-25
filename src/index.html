@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>SimBPMN Visualizer</title>
+</head>
+
+<body>
+  <div id="content">
+    <div id="sidebar">
+      <div class="panel-heading">
+        <div>
+          <h3 id="sidebar_title"></h3>
+        </div>
+        <div>
+          <input id="search" type="search" />
+        </div>
+      </div>
+      <div class="panel-body">
+        <ul id="files">
+          <!--....Directory View is inserted here....-->
+        </ul>
+      </div>
+    </div>
+
+    <div class="resizer" id="horizontalResizer" data-direction="horizontal"></div>
+
+    <div class="content with-diagram" id="js-drop-zone">
+
+
+      <div class="message intro">
+        <div class="fileNameInput">
+          <label for="filename">Name: </label>
+          <input type="text" id="filename">
+          <label>.bpmn</label>
+          <div>
+            <button id="js-create-diagram" type="submit"></button>
+          </div>
+        </div>
+      </div>
+
+      <div id="middle">
+        <div id="bpmnContent">
+          <div class="canvas" id="js-canvas"></div>
+
+          <div class="resizer" id="verticalResizer" data-direction="vertical"></div>
+
+          <div class="simbpmncanvas" id="js-simbpmncanvas"></div>
+        </div>
+
+        <div id="settings">
+          <div id="language">
+            <h1 class="settings_title" id="language_title"></h1>
+            <div class="settings_content">
+              <p class="settings_description" id="language_description"></p>
+              <label for="languages" id="language_label"></label>
+              <select id="languages">
+                <option value="de">Deutsch</option>
+                <option value="en">English</option>
+
+              </select>
+            </div>
+          </div>
+
+          <hr>
+
+          <div id="workspace">
+            <h1 class="settings_title" id="workspace_title"></h1>
+            <div class="settings_content">
+              <p class="settings_description" id="workspace_location_description"></p>
+              <label for="workspace_location" id="workspace_location_label"></label>
+              <input type="text" disabled id="workspace_location">
+              <button id="change_workspace_button"></button>
+            </div>
+          </div>
+        </div>
+
+        <hr>
+
+        <div id="bottomMenu">
+          <div id="tabswitch">
+            <nav>
+              <ul>
+                <li class="active">
+                  <a>
+                    <span class="menuItem">A</span>
+                  </a>
+                </li>
+                <li>
+                  <a>
+                    <svg class="icon" width="100px" height="100px" viewBox="0 -5 100 100"
+                      xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
+                      role="img" class="iconify iconify--gis" preserveAspectRatio="xMidYMid meet">
+                      <path
+                        d="M2.5 12.5A2.5 2.5 0 0 0 0 15v70a2.5 2.5 0 0 0 2.5 2.5h95A2.5 2.5 0 0 0 100 85V15a2.5 2.5 0 0 0-2.5-2.5zm2.5 5h90v65H5z"
+                        fill="#FFF"></path>
+                      <path
+                        d="M50 20L35.004 34.395h9.869V43H9v4.5h82V43H55.125v-8.605h9.873L50 20zM9 52.5V57h35.873v8.604H35L50 80l15-14.396h-9.877V57H91v-4.5H9z"
+                        fill="#FFF"></path>
+                    </svg>
+                  </a>
+                </li>
+                <li>
+                  <a>
+                    <span class="menuItem">L</span>
+                  </a>
+                </li>
+              </ul>
+
+              <div class="tubelight">
+                <div class="light-ray"></div>
+              </div>
+            </nav>
+
+          </div>
+          <div id="settingsSwitch">
+            <nav>
+              <ul>
+                <li>
+                  <a>
+                    <svg class="icon" width="100px" height="100px" viewBox="0 -50 512 568"
+                      xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
+                      role="img" class="iconify iconify--gis" preserveAspectRatio="xMidYMid meet">
+                      <path
+                        d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8.2-74.3-7.8-109.2 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L88.7 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L67.3 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8.2 74.3 7.8 109.2 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"
+                        fill="#FFF" />
+                    </svg>
+                  </a>
+                </li>
+              </ul>
+
+              <div class="tubelight">
+                <div class="light-ray"></div>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="properties-panel-parent" id="js-properties-panel"></div>
+    </div>
+  </div>
+
+</body>
+
+</html>

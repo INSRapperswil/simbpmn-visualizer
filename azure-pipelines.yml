@@ -23,15 +23,15 @@ steps:
     npm run make
   displayName: 'npm run make'
 
-- task: CmdLine@2
-  inputs:
-    script: |
-      echo dir
-      dir /s
-    workingDirectory: '$(Pipeline.Workspace)'
+# - task: CmdLine@2
+#   inputs:
+#     script: |
+#       echo dir
+#       dir /s
+#     workingDirectory: '$(Pipeline.Workspace)'
 
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: '$(Build.BinariesDirectory)\out\**'
+    targetPath: '$(System.DefaultWorkingDirectory)\out\**'
     publishLocation: 'pipeline'
     

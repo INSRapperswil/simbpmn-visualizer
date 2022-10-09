@@ -28,7 +28,7 @@ steps:
       $major,$minor,$build = $version.Split('.')    
       
       $build = "$(build.buildnumber)"    
-      $build = $build.replace('.','-')
+      $build = $build.replace('.','')
       
       $bumpedVersion = $major,$minor,$build  -join(".")
       

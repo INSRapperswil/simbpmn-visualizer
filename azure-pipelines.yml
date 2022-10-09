@@ -35,12 +35,14 @@ steps:
       echo $bumpedVersion
       
       Write-Host "##vso[task.setvariable variable=version]$bumpedVersion"
+  displayName: 'Generate variable version'
 
 - task: Npm@1
   inputs:
     command: 'custom'
     workingDir: '$(Build.sourcesdirectory)'
     customCommand: 'version $(version) --no-git-tag-version'
+  displayName: 'npm version'
 
 - script: |
     npm install

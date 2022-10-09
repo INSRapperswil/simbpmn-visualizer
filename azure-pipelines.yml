@@ -44,10 +44,6 @@ steps:
 
 - script: |
     npm install
-  displayName: 'npm version'
-
-- script: |
-    npm install
   displayName: 'npm install'
 
 - script: |

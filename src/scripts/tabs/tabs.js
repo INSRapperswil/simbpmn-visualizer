@@ -14,7 +14,7 @@ links.forEach((item, index) => {
     item.addEventListener("click", () => clickItem(item, index));
 })
 
-activeItem = links[0];
+clickItem(links[0], 0)
 
 function clickItem(item, index) {
     if (activeItem == item) {
@@ -34,7 +34,9 @@ function clickItem(item, index) {
 function offsetLight(element, light) {
     const menuItem = element.getBoundingClientRect();
     const menuOffset = menu.getBoundingClientRect();
-    let left = Math.floor(menuItem.left - menuOffset.left + (light.offsetWidth - menuItem.width) / 2);
+    //let leftTemp = menuItem.left - menuOffset.left - 3 + (light.offsetWidth - menuItem.width) / 2;
+    //let left = menuItem.left - menuOffset.left - 3;
+    let left = element.offsetLeft + element.offsetWidth/2 - light.offsetWidth/2;
     light.style.transform = `translate3d(${left}px, 0 , 0)`;
 }
 

@@ -21,11 +21,13 @@
     "ImportFile": "Projekt importieren",
     "ExportFile": "Projekt exportieren",
     "CreateNewFile": "Neue Datei erstellen",
-    "Specifications": "Spezifikationenn",
+    "Specifications": "Spezifikationen",
     "Search": "Suche",
     "LanguageDescription": "Die Sprache die zur Anzeige der Benutzeroberfläche des Editors verwendet wird.",
     "WorkspaceLocation": "Speicherort des Workspaces",
     "WorkspaceLocationDescription": "Der Ort im Dateisystem an dem der Workspace und alle seine Dateien gespeichert werden.",
     "WorkspaceLocationLabel": "Speicherort:",
-    "Create": "Erstellen"
+    "Create": "Erstellen",
+    "Logic" : "Logik",
+    "Architecture" : "Architektur"
 }

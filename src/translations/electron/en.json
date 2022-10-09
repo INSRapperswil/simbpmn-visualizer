@@ -27,5 +27,7 @@
     "WorkspaceLocation": "Location of the workspace",
     "WorkspaceLocationDescription": "The location in the file system where the workspace and all its files are stored.",
     "WorkspaceLocationLabel": "Location:",
-    "Create": "Create"
+    "Create": "Create",
+    "Logic" : "Logic",
+    "Architecture" : "Architecture"
 }

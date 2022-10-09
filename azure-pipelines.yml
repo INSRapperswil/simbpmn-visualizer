@@ -68,8 +68,9 @@ steps:
   displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
   inputs:
     SourceFolder: '$(Pipeline.Workspace)'
-    Contents: '**/SimBPMN Visualizer*etup.exe'
+    Contents: '**/SimBPMN Visualizer*Setup.exe'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    flattenFolders: true
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: SimBPMN Visualizer'

@@ -1,0 +1,78 @@
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- master
+
+pool:
+  vmImage: windows-latest
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '14.x'
+  displayName: 'Install Node.js'
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      $filePath = "$(Build.sourcesdirectory)\package.json" #filepath
+      $Jsonfile= Get-Content $filePath | ConvertFrom-Json
+      $version = $Jsonfile.version
+      
+      echo $version
+      
+      $major,$minor,$build = $version.Split('.')    
+      
+      $build = "$(build.buildnumber)"    
+      $build = $build.replace('.','')
+      
+      $bumpedVersion = $major,$minor,$build  -join(".")
+      
+      echo $bumpedVersion
+      
+      Write-Host "##vso[task.setvariable variable=version]$bumpedVersion"
+  displayName: 'Generate variable version'
+
+- task: Npm@1
+  inputs:
+    command: 'custom'
+    workingDir: '$(Build.sourcesdirectory)'
+    customCommand: 'version $(version) --no-git-tag-version'
+  displayName: 'npm version'
+
+- script: |
+    npm install
+  displayName: 'npm install'
+
+- script: |
+    npm run make
+  displayName: 'npm run make'
+
+# - task: CmdLine@2
+#   inputs:
+#     script: |
+#       echo dir
+#       dir /s
+#     workingDirectory: '$(Pipeline.Workspace)'
+
+# - task: PublishPipelineArtifact@1
+#   inputs:
+#     targetPath: '$(System.DefaultWorkingDirectory)\out\**'
+#     publishLocation: 'pipeline'
+    
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    SourceFolder: '$(Pipeline.Workspace)'
+    Contents: '**/SimBPMN Visualizer*Setup.exe'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    flattenFolders: true
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: SimBPMN Visualizer'
+  inputs:
+    ArtifactName: SimBPMN Visualizer

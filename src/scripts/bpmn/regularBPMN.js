@@ -169,7 +169,7 @@ window.electronAPI.onCreateXmlFile((event) => {
     .saveXML({ format: true })
     .then((xml) => {
       event?.sender.send("xml-value", xml.xml);
-      window.modelIsDirty = false;
+      window.markAsClean();
     })
     .catch((error) => console.error("Error happened saving XML: ", error));
 });
@@ -179,35 +179,19 @@ window.electronAPI.onOpenXmlFile((event, xml) => {
 });
 
 window.onbeforeunload = (e) => {
-  //   console.log('I do not want to be closed')
-
-  //   // Unlike usual browsers that a message box will be prompted to users, returning
-  //   // a non-void value will silently cancel the close.
-  //   // It is recommended to use the dialog API to let the user confirm closing the
-  //   // application.
-  //   //if(window.modelIsDirty) {
-  //   //  e.returnValue = false;
-  //   //} 
-
-  //   if(window.modelIsDirty) {  
-  //     var response = dialog.showMessageBoxSync({ message: "Do you want to save changes?", type: "question", buttons: ["Yes", "No", "Cancel"] });
-
-  //const response = ipcRenderer.sendSync('askForSavingChanges');
   if (window.modelIsDirty) {
     const response = window.electronAPI.askForSavingChanges();
     if (response == 0) {
       bpmnModeler
       .saveXML({ format: true })
       .then((xml) => {
-        window.electronAPI.saveAndQuit(xml.xml);
-        //window.modelIsDirty = false;
+        window.electronAPI.saveForQuit(xml.xml);
       })
       .catch((error) => console.error("Error happened saving XML: ", error));
     } else if (response == 2) {
       e.returnValue = false;
     }
   }
-  //   }   
 }
 
 //----------------------------------------------------------------------
@@ -227,13 +211,26 @@ eventBus.on("element.click", function (event) {
   window.electronAPI.openLogicRelay(xml);
 });
 
-window.modelIsDirty = false;
-
 eventBus.on('elements.changed', function (context) {
-  window.modelIsDirty = true;
+  window.markAsDirty();
   //var elements = context.elements;
 });
 
+window.markAsDirty = () => {
+  window.modelIsDirty = true;
+  if(!document.title.endsWith("*")) {
+     document.title += " *"
+}
+}
+
+window.markAsClean = () => {
+  window.modelIsDirty = false;
+  if(document.title.endsWith("*")) {
+    document.title = document.title.substring(0, document.title.length-1).trimEnd();
+  }
+}
+
+window.markAsClean();
 
 window.electronAPI.saveLogic((event, xml) => {
   if (_currentBusinessObject === null) {

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, dialog, shell } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog, shell, MessageBoxSyncOptions, WebPreferences } from 'electron';
 import fs from 'fs';
 import i18n from 'i18next';
 import config from './configs/app.config';
@@ -29,22 +29,23 @@ function createWindow() {
     mainWindow = new BrowserWindow({
         webPreferences: {
             preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
-            contextIsolation: true,
-        }
+            contextIsolation: true
+        } as WebPreferences
     });
     mainWindow.maximize();
     mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
     buildMenu(app, mainWindow);
+
     //--------------------------------------------DEV------------------------
-    //mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools();
 }
 
 async function initSettings() {
     const isWorkspaceDefined = await settings.has('workspace.path');
     if (!isWorkspaceDefined) {
         const workspacePath = path.join(os.homedir(), 'workspace_simbpmn');
-        if(!fs.existsSync(workspacePath)){
+        if (!fs.existsSync(workspacePath)) {
             fs.mkdirSync(workspacePath);
         }
 
@@ -64,12 +65,12 @@ if (require('electron-squirrel-startup')) {
 }
 
 app.on('before-quit', () => {
-   settings.setSync('workspace', {
-       lastFile: workspace.activeBpmnFile
-   });
-   settings.setSync('workspace', {
-       path: workspace.workspacePath
-   });
+    settings.setSync('workspace', {
+        lastFile: workspace.activeBpmnFile
+    });
+    settings.setSync('workspace', {
+        path: workspace.workspacePath
+    });
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -108,7 +109,20 @@ app.whenReady().then(() => {
             i18n.changeLanguage(languageCode)
         });
         ipcMain.handle('getApplicationLanguage', () => i18n.language);
-        ipcMain.on('xml-value', (event, xml) => workspace.createBpmnFile(xml));
+        ipcMain.on('xml-value', (event, xml) => workspace.createBpmnFile(xml, true));
+        ipcMain.on('askForSavingChanges', (event) => {
+            event.returnValue = require('electron').dialog.showMessageBoxSync(mainWindow,
+                {
+                    type: 'question',
+                    buttons: ['Yes', 'No', 'Cancel'],
+                    title: 'Closing',
+                    message: 'Do you want to save changes?'
+                });
+        });
+        ipcMain.on('saveForQuit', (event, xml) => {
+            workspace.createBpmnFile(xml, false);
+            //app.quit();
+        });
     })
 
     createWindow();
@@ -117,7 +131,7 @@ app.whenReady().then(() => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
 i18n.on('loaded', (loaded: any) => {
-    if(settings.hasSync('language.code')){
+    if (settings.hasSync('language.code')) {
         i18n.changeLanguage(settings.getSync('language.code').toString());
     } else {
         i18n.changeLanguage(app.getLocale());
@@ -161,14 +175,12 @@ process.on('unhandledRejection', (reason, p) => {
 //----------------------------------------------------------------
 //logic code
 //----------------------------------------------------------------
-ipcMain.handle("saveLogicRelay", (event: any, xml: string) =>
-{
+ipcMain.handle("saveLogicRelay", (event: any, xml: string) => {
     //console.log("relaying save logic");
     mainWindow.webContents.send('saveLogic', xml);
 });
 
-ipcMain.handle("openLogicRelay", (event: any, xml: string) =>
-{
+ipcMain.handle("openLogicRelay", (event: any, xml: string) => {
     //console.log("relaying open logic");
     mainWindow.webContents.send('openLogic', xml);
 });
@@ -176,8 +188,7 @@ ipcMain.handle("openLogicRelay", (event: any, xml: string) =>
 //----------------------------------------------------------------
 //translations code
 //----------------------------------------------------------------
-ipcMain.handle("getTranslation", (event: any, key: string) =>
-{
+ipcMain.handle("getTranslation", (event: any, key: string) => {
     console.log("get translation via relay");
     return i18n.t(key);
 });

@@ -14,6 +14,8 @@ import ControlsModule from '../controls';
 import bpmnTranslations from "../../translations/bpmn/translations";
 import { toggleSettings } from "../tabs/settings";
 
+import customRulesModules from '../controls/custom-rules';
+
 const container = $("#js-drop-zone");
 const canvas = $("#js-canvas");
 const bpmnContent = document.querySelector("#bpmnContent");
@@ -37,9 +39,10 @@ const bpmnModeler = new BpmnModeler({
     BpmnPropertiesPanelModule,
     BpmnColorPickerModule,
     ExtensionPropertiesProvider,
-      // Can not activly switch translations atm
+    // Can not activly switch translations atm
     //customTranslateModule,
-    ControlsModule
+    ControlsModule,
+    customRulesModules
   ],
   moddleExtensions: {
     simbpmn: simBpmnModdleDescriptor,
@@ -164,13 +167,48 @@ $(function () {
 window.electronAPI.onCreateXmlFile((event) => {
   bpmnModeler
     .saveXML({ format: true })
-    .then((xml) => event.sender.send("xml-value", xml.xml))
+    .then((xml) => {
+      event?.sender.send("xml-value", xml.xml);
+      window.modelIsDirty = false;
+    })
     .catch((error) => console.error("Error happened saving XML: ", error));
 });
 
 window.electronAPI.onOpenXmlFile((event, xml) => {
   openDiagram(xml);
 });
+
+window.onbeforeunload = (e) => {
+  //   console.log('I do not want to be closed')
+
+  //   // Unlike usual browsers that a message box will be prompted to users, returning
+  //   // a non-void value will silently cancel the close.
+  //   // It is recommended to use the dialog API to let the user confirm closing the
+  //   // application.
+  //   //if(window.modelIsDirty) {
+  //   //  e.returnValue = false;
+  //   //} 
+
+  //   if(window.modelIsDirty) {  
+  //     var response = dialog.showMessageBoxSync({ message: "Do you want to save changes?", type: "question", buttons: ["Yes", "No", "Cancel"] });
+
+  //const response = ipcRenderer.sendSync('askForSavingChanges');
+  if (window.modelIsDirty) {
+    const response = window.electronAPI.askForSavingChanges();
+    if (response == 0) {
+      bpmnModeler
+      .saveXML({ format: true })
+      .then((xml) => {
+        window.electronAPI.saveAndQuit(xml.xml);
+        //window.modelIsDirty = false;
+      })
+      .catch((error) => console.error("Error happened saving XML: ", error));
+    } else if (response == 2) {
+      e.returnValue = false;
+    }
+  }
+  //   }   
+}
 
 //----------------------------------------------------------------------
 //simBPMN functions
@@ -188,6 +226,14 @@ eventBus.on("element.click", function (event) {
   const xml = simBPMNLogic.readLogic(_currentBusinessObject);
   window.electronAPI.openLogicRelay(xml);
 });
+
+window.modelIsDirty = false;
+
+eventBus.on('elements.changed', function (context) {
+  window.modelIsDirty = true;
+  //var elements = context.elements;
+});
+
 
 window.electronAPI.saveLogic((event, xml) => {
   if (_currentBusinessObject === null) {

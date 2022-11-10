@@ -70,17 +70,15 @@ export class Workspace {
         }
     }
 
-    createBpmnFile(xml: string, loadFolder: boolean) {
+    createBpmnFile(xml: string) {
         const filePath = path.join(this.workspacePath, this.activeBpmnFile);
         fs.writeFileSync(filePath, xml, { encoding: "utf-8" });
-        if(loadFolder) {
-            this.mainWindow.webContents.send('loadFolder', this.workspacePath);
-        }
+        this.mainWindow.webContents.send('loadFolder', this.workspacePath);
     }
 
     createNewFile(filename: string, xml: string) {
         this.activeBpmnFile = filename;
-        this.createBpmnFile(xml, true);
+        this.createBpmnFile(xml);
     }
 
     async importBPMN() {

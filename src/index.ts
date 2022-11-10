@@ -33,12 +33,15 @@ function createWindow() {
         } as WebPreferences
     });
     mainWindow.maximize();
-    mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+
+    mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY );
 
     buildMenu(app, mainWindow);
 
     //--------------------------------------------DEV------------------------
-    mainWindow.webContents.openDevTools();
+    if (process.argv[2] === '--dev') {
+       mainWindow.webContents.openDevTools();
+    }
 }
 
 async function initSettings() {
@@ -109,18 +112,18 @@ app.whenReady().then(() => {
             i18n.changeLanguage(languageCode)
         });
         ipcMain.handle('getApplicationLanguage', () => i18n.language);
-        ipcMain.on('xml-value', (event, xml) => workspace.createBpmnFile(xml, true));
+        ipcMain.on('xml-value', (event, xml) => workspace.createBpmnFile(xml));
         ipcMain.on('askForSavingChanges', (event) => {
             event.returnValue = require('electron').dialog.showMessageBoxSync(mainWindow,
                 {
                     type: 'question',
                     buttons: ['Yes', 'No', 'Cancel'],
-                    title: 'Closing',
+                    title: 'Unsaved changes',
                     message: 'Do you want to save changes?'
                 });
         });
-        ipcMain.on('saveForQuit', (event, xml) => {
-            workspace.createBpmnFile(xml, false);
+        ipcMain.handle('saveForQuit', (event, xml) => {
+            workspace.createBpmnFile(xml);
             //app.quit();
         });
     })

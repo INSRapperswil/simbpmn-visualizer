@@ -27,5 +27,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
   saveLogic: (callback: any) => ipcRenderer.on("saveLogic", callback),
   openLogic: (callback: any) => ipcRenderer.on("openLogic", callback),
   askForSavingChanges: () => ipcRenderer.sendSync("askForSavingChanges"),
-  saveForQuit: (xml: string) => ipcRenderer.send("saveForQuit", xml),
+  saveForQuit: (xml: string) => ipcRenderer.invoke("saveForQuit", xml),
 });

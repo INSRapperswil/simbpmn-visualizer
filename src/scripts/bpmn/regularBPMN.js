@@ -179,21 +179,38 @@ window.electronAPI.onOpenXmlFile((event, xml) => {
 });
 
 window.onbeforeunload = (e) => {
-  if (window.modelIsDirty) {
-    const response = window.electronAPI.askForSavingChanges();
-    if (response == 0) {
-      bpmnModeler
-      .saveXML({ format: true })
-      .then((xml) => {
-        window.electronAPI.saveForQuit(xml.xml);
-      })
-      .catch((error) => console.error("Error happened saving XML: ", error));
-    } else if (response == 2) {
+  window.checkForDirty().then(res => {
+    if (!res) {
       e.returnValue = false;
     }
-  }
+  })
 }
 
+window.checkForDirty = () => {
+  return new Promise(resolve => {
+    if (window.modelIsDirty) {
+      const response = window.electronAPI.askForSavingChanges();
+      if (response == 0) {
+        bpmnModeler
+          .saveXML({ format: true })
+          .then((xml) => {
+            window.electronAPI.saveForQuit(xml.xml).then(() => {
+              window.markAsClean();
+              resolve(true);
+            });
+          })
+          .catch((error) => {
+            console.error("Error happened saving XML: ", error);
+            resolve(false);
+          });
+      } else if (response == 2) {
+        resolve(false);
+      }
+    } else {
+      resolve(true);
+    }
+  });
+}
 //----------------------------------------------------------------------
 //simBPMN functions
 //----------------------------------------------------------------------
@@ -202,6 +219,10 @@ var eventBus = bpmnModeler.get("eventBus");
 let _currentBusinessObject = null;
 
 eventBus.on("element.click", function (event) {
+
+
+
+  console.log(eventBus._listeners);
   console.log(event.element.id + " was clicked");
 
   _currentBusinessObject = simBPMNLogic.getRelevantBusinessObject(event.element);
@@ -216,17 +237,21 @@ eventBus.on('elements.changed', function (context) {
   //var elements = context.elements;
 });
 
+eventBus.on('commandStack.shape.create.executed', function (context) {
+  console.log("shape added");
+});
+
 window.markAsDirty = () => {
   window.modelIsDirty = true;
-  if(!document.title.endsWith("*")) {
-     document.title += " *"
-}
+  if (!document.title.endsWith("*")) {
+    document.title += " *"
+  }
 }
 
 window.markAsClean = () => {
   window.modelIsDirty = false;
-  if(document.title.endsWith("*")) {
-    document.title = document.title.substring(0, document.title.length-1).trimEnd();
+  if (document.title.endsWith("*")) {
+    document.title = document.title.substring(0, document.title.length - 1).trimEnd();
   }
 }
 
@@ -240,8 +265,12 @@ window.electronAPI.saveLogic((event, xml) => {
 });
 
 window.electronAPI.returnToMainPage((event) => {
-  container.removeClass("with-diagram");
-  initApplication();
+  window.checkForDirty().then(res => {
+    if (res) {
+      container.removeClass("with-diagram");
+      initApplication();
+    }
+  });
 });
 
 

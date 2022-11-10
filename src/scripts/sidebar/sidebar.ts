@@ -56,8 +56,8 @@ export class Sidebar {
 
     for (const file of hierarchy) {
       for (const dir of directories) {
-        if(!file.isDirectory && file.filename.split('.').pop() === 'bpmn' &&
-            dir.filename == file.filename.replace(/\.[^/.]+$/, "")){
+        if (!file.isDirectory && file.filename.split('.').pop() === 'bpmn' &&
+          dir.filename == file.filename.replace(/\.[^/.]+$/, "")) {
           file.addChild(dir);
           break;
         }
@@ -103,10 +103,14 @@ export class Sidebar {
     baseFileElement.innerHTML = fileItem.filename;
     baseFileElement.classList.add("childListItem");
     baseFileElement.addEventListener("click", () => {
-      (window as any).electronAPI.openFile(fileItem.path, true);
+      (window as any).checkForDirty().then((res: boolean) => {
+        if (res) {
+          (window as any).electronAPI.openFile(fileItem.path, true);
+        }
+      })
     })
     children.appendChild(baseFileElement);
-    if(fileItem.children[0]) {
+    if (fileItem.children[0]) {
       for (const child of fileItem.children[0].children) {
         const childElement = document.createElement("li");
         childElement.innerHTML = child.filename;
@@ -121,12 +125,12 @@ export class Sidebar {
 
 
 
-      listItem.appendChild(node);
-      listItem.appendChild(label);
-      listItem.appendChild(children);
+    listItem.appendChild(node);
+    listItem.appendChild(label);
+    listItem.appendChild(children);
 
-      htmlNode.appendChild(listItem);
-      return htmlNode;
+    htmlNode.appendChild(listItem);
+    return htmlNode;
   };
 
   getFileName = function (path: string): string {

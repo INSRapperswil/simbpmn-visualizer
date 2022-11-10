@@ -1,12 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:simBPMN="http://simBPMN" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="Process_1" isExecutable="false">
-    <bpmn2:startEvent id="StartEvent_1"/>
+    <simBPMN:server id="Server_0w0doh4">
+      <bpmn2:outgoing>Flow_09jkd0n</bpmn2:outgoing>
+    </simBPMN:server>
+    <simBPMN:queue id="Queue_15le3g8">
+      <bpmn2:incoming>Flow_09jkd0n</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1mzefqi</bpmn2:outgoing>
+    </simBPMN:queue>
+    <bpmn2:sequenceFlow id="Flow_09jkd0n" sourceRef="Server_0w0doh4" targetRef="Queue_15le3g8" />
+    <simBPMN:output id="Output_0pnrcln">
+      <bpmn2:incoming>Flow_1mzefqi</bpmn2:incoming>
+    </simBPMN:output>
+    <bpmn2:sequenceFlow id="Flow_1mzefqi" sourceRef="Queue_15le3g8" targetRef="Output_0pnrcln" />
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
-      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds height="36.0" width="36.0" x="412.0" y="240.0"/>
+      <bpmndi:BPMNEdge id="Flow_09jkd0n_di" bpmnElement="Flow_09jkd0n">
+        <di:waypoint x="510" y="390" />
+        <di:waypoint x="560" y="390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mzefqi_di" bpmnElement="Flow_1mzefqi">
+        <di:waypoint x="660" y="390" />
+        <di:waypoint x="710" y="390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Server_0w0doh4_di" bpmnElement="Server_0w0doh4">
+        <dc:Bounds x="410" y="350" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Queue_15le3g8_di" bpmnElement="Queue_15le3g8">
+        <dc:Bounds x="560" y="350" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Output_0pnrcln_di" bpmnElement="Output_0pnrcln">
+        <dc:Bounds x="710" y="350" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

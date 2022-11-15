@@ -1,37 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:simBPMN="http://simBPMN" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:simBPMN="http://simBPMN" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="Process_1" isExecutable="false">
     <simBPMN:server id="Server_0w0doh4">
-      <bpmn2:outgoing>Flow_09jkd0n</bpmn2:outgoing>
+      <bpmn2:incoming>Flow_0bta90x</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_00z3ipx</bpmn2:outgoing>
     </simBPMN:server>
     <simBPMN:queue id="Queue_15le3g8">
-      <bpmn2:incoming>Flow_09jkd0n</bpmn2:incoming>
-      <bpmn2:outgoing>Flow_1mzefqi</bpmn2:outgoing>
+      <bpmn2:incoming>Flow_1hd9mqp</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0bta90x</bpmn2:outgoing>
     </simBPMN:queue>
-    <bpmn2:sequenceFlow id="Flow_09jkd0n" sourceRef="Server_0w0doh4" targetRef="Queue_15le3g8" />
     <simBPMN:output id="Output_0pnrcln">
-      <bpmn2:incoming>Flow_1mzefqi</bpmn2:incoming>
+      <bpmn2:incoming>Flow_00z3ipx</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_17dutap</bpmn2:outgoing>
     </simBPMN:output>
-    <bpmn2:sequenceFlow id="Flow_1mzefqi" sourceRef="Queue_15le3g8" targetRef="Output_0pnrcln" />
+    <bpmn2:sequenceFlow id="Flow_0bta90x" sourceRef="Queue_15le3g8" targetRef="Server_0w0doh4" />
+    <bpmn2:sequenceFlow id="Flow_00z3ipx" sourceRef="Server_0w0doh4" targetRef="Output_0pnrcln" />
+    <bpmn2:endEvent id="Event_145rjcl">
+      <bpmn2:incoming>Flow_17dutap</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="Flow_17dutap" sourceRef="Output_0pnrcln" targetRef="Event_145rjcl" />
+    <bpmn2:startEvent id="Event_1l0fkag">
+      <bpmn2:outgoing>Flow_1hd9mqp</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="Flow_1hd9mqp" sourceRef="Event_1l0fkag" targetRef="Queue_15le3g8" />
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
-      <bpmndi:BPMNEdge id="Flow_09jkd0n_di" bpmnElement="Flow_09jkd0n">
-        <di:waypoint x="510" y="390" />
-        <di:waypoint x="560" y="390" />
+      <bpmndi:BPMNEdge id="Flow_0bta90x_di" bpmnElement="Flow_0bta90x">
+        <di:waypoint x="400" y="270" />
+        <di:waypoint x="460" y="270" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1mzefqi_di" bpmnElement="Flow_1mzefqi">
-        <di:waypoint x="660" y="390" />
-        <di:waypoint x="710" y="390" />
+      <bpmndi:BPMNEdge id="Flow_00z3ipx_di" bpmnElement="Flow_00z3ipx">
+        <di:waypoint x="560" y="270" />
+        <di:waypoint x="620" y="270" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Server_0w0doh4_di" bpmnElement="Server_0w0doh4">
-        <dc:Bounds x="410" y="350" width="100" height="80" />
+      <bpmndi:BPMNEdge id="Flow_17dutap_di" bpmnElement="Flow_17dutap">
+        <di:waypoint x="720" y="270" />
+        <di:waypoint x="782" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hd9mqp_di" bpmnElement="Flow_1hd9mqp">
+        <di:waypoint x="228" y="270" />
+        <di:waypoint x="300" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Queue_15le3g8_di" bpmnElement="Queue_15le3g8" bioc:stroke="#1e88e5" bioc:fill="#bbdefb" color:background-color="#bbdefb" color:border-color="#1e88e5">
+        <dc:Bounds x="300" y="230" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Queue_15le3g8_di" bpmnElement="Queue_15le3g8">
-        <dc:Bounds x="560" y="350" width="100" height="80" />
+      <bpmndi:BPMNShape id="Server_0w0doh4_di" bpmnElement="Server_0w0doh4">
+        <dc:Bounds x="460" y="230" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Output_0pnrcln_di" bpmnElement="Output_0pnrcln">
-        <dc:Bounds x="710" y="350" width="100" height="80" />
+        <dc:Bounds x="620" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_145rjcl_di" bpmnElement="Event_145rjcl">
+        <dc:Bounds x="782" y="252" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1l0fkag_di" bpmnElement="Event_1l0fkag">
+        <dc:Bounds x="192" y="252" width="36" height="36" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

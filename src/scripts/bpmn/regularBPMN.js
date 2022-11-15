@@ -188,7 +188,7 @@ window.onbeforeunload = async (e) => {
         window.electronAPI.closeApp();
       }
     })
-  });
+  }, 100);
 }
 
 window.checkForDirty = () => {
@@ -227,22 +227,53 @@ var eventBus = bpmnModeler.get("eventBus");
 let _currentBusinessObject = null;
 
 eventBus.on("element.click", function (event) {
-  console.log(event.element.id + " was clicked");
+  //console.log(event.element.id + " was clicked");
 
-  _currentBusinessObject = simBPMNLogic.getRelevantBusinessObject(event.element);
+  //selectShape(event.element);
+
+});
+
+eventBus.on('selection.changed', function(context) {
+  var oldSelection = context.oldSelection,
+      newSelection = context.newSelection;
+
+      if(newSelection.length > 0) {
+        selectShape(newSelection[0]);
+      }
+  // go crazy
+});
+
+function selectShape(shape) {
+  console.log(shape.id + " was clicked");
+
+  showHideLogic(shape.type == "bpmn:SubProcess")
+
+  _currentBusinessObject = simBPMNLogic.getRelevantBusinessObject(shape);
 
   //load logic xml if existing
   const xml = simBPMNLogic.readLogic(_currentBusinessObject);
   window.electronAPI.openLogicRelay(xml);
-});
+}
 
+function showHideLogic(hide) {
+  if(hide) {
+    $(".tabSwitchMenu li:first").trigger('click');
+    document.getElementById("tabswitchMenu").children[1].style.display = "none";
+    document.getElementById("tabswitchMenu").children[2].style.display = "none";
+  } else {
+    document.getElementById("tabswitchMenu").children[1].style.display = "";
+    document.getElementById("tabswitchMenu").children[2].style.display = "";
+  }
+
+}
 eventBus.on('elements.changed', function (context) {
   window.markAsDirty();
   //var elements = context.elements;
 });
 
-eventBus.on('commandStack.shape.create.executed', function (context) {
+eventBus.on('commandStack.shape.create.executed', function (event) {
   console.log("shape added");
+  //selectShape(event.context.shape);
 });
 
 window.markAsDirty = () => {

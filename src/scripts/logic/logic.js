@@ -1,5 +1,6 @@
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil';
 import diagramXML from "../../resources/newLogicDiagram.bpmn";
+import emptyDiagramXML from "../../resources/emptyLogicDiagram.bpmn";
 
 export class logic {
 
@@ -21,6 +22,10 @@ export class logic {
     readLogic(businessObject) {
         let xml = businessObject.$attrs.content;
         if (xml === undefined) {
+            let type = businessObject.$type;
+            if(type === "bpmn:SequenceFlow" || type.endsWith("Gateway")) {
+                return emptyDiagramXML;
+            } 
             return diagramXML;
         }
 

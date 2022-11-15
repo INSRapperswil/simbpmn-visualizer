@@ -36,6 +36,7 @@ import "./css/vendor/diagram-js-minimap/assets/diagram-js-minimap.css";
 
 import "./css/app.css";
 import "./css/simBPMN.css"
+import "./css/regularBPMN.css"
 import "./css/sidebar.css";
 import "./css/tabs.css";
 import "./css/splitview.css";

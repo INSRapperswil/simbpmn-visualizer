@@ -19,6 +19,6 @@
     background-position: center center;
 }
 
-.simbpmncanvas .djs-palette-entries .bpmn-icon-participant {
+.canvas .djs-palette-entries .bpmn-icon-participant {
     display: none;
 }

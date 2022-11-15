@@ -122,6 +122,9 @@ app.whenReady().then(() => {
                     message: 'Do you want to save changes?'
                 });
         });
+        ipcMain.on('closeApp', (event) => {
+            app.quit()
+        });
         ipcMain.handle('saveForQuit', (event, xml) => {
             workspace.createBpmnFile(xml);
             //app.quit();

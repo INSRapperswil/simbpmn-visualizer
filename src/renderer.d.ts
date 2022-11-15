@@ -9,6 +9,7 @@ export interface IElectronAPI {
     openLogic: (xml:string) => Promise<void>
     getTranslation: (translation: string) => Promise<string>
     saveForQuit: (xml:string) => Promise<void>
+    closeApp: () => Promise<void>
 }
 
 declare global {

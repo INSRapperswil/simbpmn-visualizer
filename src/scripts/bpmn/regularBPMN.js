@@ -178,17 +178,23 @@ window.electronAPI.onOpenXmlFile((event, xml) => {
   openDiagram(xml);
 });
 
-window.onbeforeunload = (e) => {
-  window.checkForDirty().then(res => {
-    if (!res) {
-      e.returnValue = false;
-    }
-  })
+window.onbeforeunload = async (e) => {
+  e.preventDefault();
+  e.returnValue = false;
+
+  setTimeout(() => {
+    window.checkForDirty().then(res => {
+      if (res) {
+        window.electronAPI.closeApp();
+      }
+    })
+  });
 }
 
 window.checkForDirty = () => {
   return new Promise(resolve => {
     if (window.modelIsDirty) {
+      // buttons: ['Yes', 'No', 'Cancel'],
       const response = window.electronAPI.askForSavingChanges();
       if (response == 0) {
         bpmnModeler
@@ -203,6 +209,8 @@ window.checkForDirty = () => {
             console.error("Error happened saving XML: ", error);
             resolve(false);
           });
+      } else if (response == 1) {
+        resolve(true);
       } else if (response == 2) {
         resolve(false);
       }
@@ -219,10 +227,6 @@ var eventBus = bpmnModeler.get("eventBus");
 let _currentBusinessObject = null;
 
 eventBus.on("element.click", function (event) {
-
-
-
-  console.log(eventBus._listeners);
   console.log(event.element.id + " was clicked");
 
   _currentBusinessObject = simBPMNLogic.getRelevantBusinessObject(event.element);

@@ -1,4 +1,4 @@
-export default class SimBPMNContextPadProvider {
+export default class RegularBPMNContextPadProvider {
     constructor(config, contextPad, create, elementFactory, injector, translate) {
         this.create = create;
         this.elementFactory = elementFactory;
@@ -20,7 +20,7 @@ export default class SimBPMNContextPadProvider {
         } = this;
 
 
-        function createSimBPMNAction(type, group, title, classname) {
+        function createRegularBPMNAction(type, group, title, classname) {
 
             function createDragListener(event) {
                 var shape = elementFactory.createShape( { type: type });
@@ -51,16 +51,13 @@ export default class SimBPMNContextPadProvider {
 
 
         return {
-            'append.simBPMN-Resource': createSimBPMNAction('simBPMN:Resource', 'simBPMN', translate('Append Resource'), 'simBPMN-resource-icon'),
-            'append.simBPMN-Token': createSimBPMNAction('simBPMN:Token', 'simBPMN', translate('Append Token'), 'simBPMN-token-icon'),
-            'append.simBPMN-Queue': createSimBPMNAction('simBPMN:Queue', 'simBPMN', translate('Append Queue'), 'simBPMN-queue-icon'),
-            'append.simBPMN-Server': createSimBPMNAction('simBPMN:Server', 'simBPMN', translate('Append Server'), 'simBPMN-server-icon'),
-            'append.simBPMN-Output': createSimBPMNAction('simBPMN:Output', 'simBPMN', translate('Append Output'), 'simBPMN-output-icon')
+            'append.regularBPMN-Resource': createRegularBPMNAction('regularBPMN:Resource', 'regularBPMN', translate('Append Resource'), 'regularBPMN-resource-icon'),
+            'append.regularBPMN-Entity': createRegularBPMNAction('regularBPMN:Entity', 'regularBPMN', translate('Append Entity'), 'regularBPMN-entity-icon')
         };
     }
 }
 
-SimBPMNContextPadProvider.$inject = [
+RegularBPMNContextPadProvider.$inject = [
     'config',
     'contextPad',
     'create',

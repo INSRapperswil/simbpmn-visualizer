@@ -1,7 +1,7 @@
 {
-    "name": "SimBPMN",
-    "prefix": "simBPMN",
-    "uri": "http://simBPMN",
+    "name": "RegularBPMN",
+    "prefix": "regularBPMN",
+    "uri": "http://regularBPMN",
     "xml": {
       "tagAlias": "lowerCase"
     },
@@ -184,31 +184,7 @@
         ]
       },
       {
-        "name": "Token",
-        "superClass": [
-          "LogicObject"
-        ],
-        "properties": [
-        ]
-      },
-      {
-        "name": "Queue",
-        "superClass": [
-          "LogicObject"
-        ],
-        "properties": [
-        ]
-      },
-      {
-        "name": "Server",
-        "superClass": [
-          "LogicObject"
-        ],
-        "properties": [
-        ]
-      },
-      {
-        "name": "Output",
+        "name": "Entity",
         "superClass": [
           "LogicObject"
         ],

@@ -3,6 +3,8 @@ import BaseRenderer from 'diagram-js/lib/draw/BaseRenderer';
 import {
     is
 } from 'bpmn-js/lib/util/ModelUtil';
+import Resource from './source/resource';
+import Token from './source/token';
 import Queue from './source/queue';
 import Server from './source/server';
 import Output from './source/output';
@@ -15,18 +17,19 @@ export default function SimBPMNRenderer(eventBus) {
     BaseRenderer.call(this, eventBus, 1500);
 
     this.canRender = function(element) {
-        return is(element, 'simBPMN:Queue') || is(element, 'simBPMN:Server') || is(element, 'simBPMN:Output');
+        return is(element, 'simBPMN:Resource') || is(element, 'simBPMN:Token') || is(element, 'simBPMN:Queue') || is(element, 'simBPMN:Server') || is(element, 'simBPMN:Output');
     };
     this.drawShape = function(parent, shape) {
         let url = '';
-        if(is(shape, "simBPMN:Queue")){
+        if(is(shape, "simBPMN:Resource")){
+            url = Resource.dataURL;
+        } else if(is(shape, "simBPMN:Token")){
+            url = Token.dataURL;
+        } else if(is(shape, "simBPMN:Queue")){
             url = Queue.dataURL;
-        }
-        if(is(shape, "simBPMN:Server")){
+        } else if(is(shape, "simBPMN:Server")){
             url = Server.dataURL;
-        }
-
-        if(is(shape, "simBPMN:Output")){
+        } else if(is(shape, "simBPMN:Output")){
             url = Output.dataURL;
         }
         var entityGfx = svgCreate('image', {

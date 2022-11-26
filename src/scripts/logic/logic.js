@@ -22,8 +22,7 @@ export class logic {
     readLogic(businessObject) {
         let xml = businessObject.$attrs.content;
         if (xml === undefined) {
-            let type = businessObject.$type;
-            if(type === "bpmn:SequenceFlow" || type.endsWith("Gateway")) {
+            if(is(businessObject, "bpmn:SequenceFlow") || is(businessObject, "bpmn:Gateway") || is(businessObject, "bpmn:Event") || is(businessObject, "regularBPMN:Entity") || is(businessObject, "regularBPMN:Resource")) {
                 return emptyDiagramXML;
             } 
             return diagramXML;

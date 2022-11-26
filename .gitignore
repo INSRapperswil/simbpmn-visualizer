@@ -89,3 +89,5 @@ typings/
 out/
 
 .idea/
+/package-lock.json
+/yarn.lock

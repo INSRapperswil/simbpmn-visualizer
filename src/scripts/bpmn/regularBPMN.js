@@ -3,11 +3,14 @@ import BpmnModeler from "bpmn-js/lib/Modeler";
 import { debounce } from "min-dash";
 import { BpmnPropertiesPanelModule } from "bpmn-js-properties-panel";
 import BpmnColorPickerModule from "bpmn-js-color-picker";
+import RegularBPMNControlsModule from '../controls/regularBPMN';
 import minimapModule from "diagram-js-minimap";
 import { logic } from "../logic/logic";
+import { is } from "bpmn-js/lib/util/ModelUtil";
 
 import ExtensionPropertiesProvider from "../provider";
 import simBpmnModdleDescriptor from "../descriptors/simBPMN.json";
+import regularBpmnModdleDescriptor from "../descriptors/regularBPMN.json";
 import diagramXML from "../../resources/newDiagram.bpmn";
 import ControlsModule from '../controls';
 
@@ -42,10 +45,12 @@ const bpmnModeler = new BpmnModeler({
     // Can not activly switch translations atm
     //customTranslateModule,
     ControlsModule,
+    RegularBPMNControlsModule,
     customRulesModules
   ],
   moddleExtensions: {
-    simbpmn: simBpmnModdleDescriptor,
+    //simbpmn: simBpmnModdleDescriptor,
+    regularbpmn: regularBpmnModdleDescriptor
   },
 });
 container.removeClass("with-diagram");
@@ -178,17 +183,19 @@ window.electronAPI.onOpenXmlFile((event, xml) => {
   openDiagram(xml);
 });
 
-window.onbeforeunload = async (e) => {
-  e.preventDefault();
-  e.returnValue = false;
+window.onbeforeunload = (e) => {
+  if (window.modelIsDirty) {
+    e.preventDefault();
+    e.returnValue = false;
 
-  setTimeout(() => {
-    window.checkForDirty().then(res => {
-      if (res) {
-        window.electronAPI.closeApp();
-      }
-    })
-  }, 100);
+    setTimeout(() => {
+      window.checkForDirty().then(res => {
+        if (res) {
+          window.electronAPI.closeApp();
+        }
+      })
+    }, 100);
+  }
 }
 
 window.checkForDirty = () => {
@@ -233,20 +240,21 @@ eventBus.on("element.click", function (event) {
 
 });
 
-eventBus.on('selection.changed', function(context) {
+eventBus.on('selection.changed', function (context) {
   var oldSelection = context.oldSelection,
-      newSelection = context.newSelection;
+    newSelection = context.newSelection;
 
-      if(newSelection.length > 0) {
-        selectShape(newSelection[0]);
-      }
+  if (newSelection.length > 0) {
+    selectShape(newSelection[0]);
+  }
   // go crazy
 });
 
 function selectShape(shape) {
   console.log(shape.id + " was clicked");
 
-  showHideLogic(shape.type == "bpmn:SubProcess")
+  //showHideLogic(shape.type == "bpmn:SubProcess")
+  showHideLogic(is(shape, "bpmn:SubProcess"))
 
   _currentBusinessObject = simBPMNLogic.getRelevantBusinessObject(shape);
 
@@ -256,7 +264,7 @@ function selectShape(shape) {
 }
 
 function showHideLogic(hide) {
-  if(hide) {
+  if (hide) {
     $(".tabSwitchMenu li:first").trigger('click');
     document.getElementById("tabswitchMenu").children[1].style.display = "none";
     document.getElementById("tabswitchMenu").children[2].style.display = "none";

@@ -15,7 +15,7 @@ export default class PaletteProvider {
             create, elementFactory, translate
         } = this;
 
-        function createSimBPMNAction(type, group, title, classname) {
+        function createRegularBPMNAction(type, group, title, classname) {
 
             function createListener(event) {
                 var shape = elementFactory.createShape( { type: type });
@@ -35,20 +35,11 @@ export default class PaletteProvider {
         }
 
         return {
-            'create-resource': createSimBPMNAction(
-                'simBPMN:Resource', 'simBPMN', translate('Create Resource'), 'simBPMN-resource-icon'
+            'create-resource': createRegularBPMNAction(
+                'regularBPMN:Resource', 'regularBPMN', translate('Create Resource'), 'regularBPMN-resource-icon'
             ),
-            'create-token': createSimBPMNAction(
-                'simBPMN:Token', 'simBPMN', translate('Create Token'), 'simBPMN-token-icon'
-            ),
-            'create-queue': createSimBPMNAction(
-                'simBPMN:Queue', 'simBPMN', translate('Create Queue'), 'simBPMN-queue-icon'
-            ),
-            'create-server': createSimBPMNAction(
-                'simBPMN:Server', 'simBPMN', translate('Create Server'), 'simBPMN-server-icon'
-            ),
-            'create-output': createSimBPMNAction(
-                'simBPMN:Output', 'simBPMN', translate('Create Output'), 'simBPMN-output-icon'
+            'create-entity': createRegularBPMNAction(
+                'regularBPMN:Entity', 'regularBPMN', translate('Create Entity'), 'regularBPMN-entity-icon'
             )
         }
     }

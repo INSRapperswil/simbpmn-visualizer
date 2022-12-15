@@ -45,7 +45,7 @@ const bpmnModeler = new BpmnModeler({
     // Can not activly switch translations atm
     //customTranslateModule,
     ControlsModule,
-    //RegularBPMNControlsModule,
+    RegularBPMNControlsModule,
     customRulesModules
   ],
   moddleExtensions: {

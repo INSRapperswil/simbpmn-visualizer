@@ -26,8 +26,8 @@ export default function RegularBPMNRenderer(eventBus) {
         var entityGfx = svgCreate('image', {
             x: 0,
                 y: 0,
-                width: 50, //shape.width,
-                height: 50, //shape.height,
+                width: shape.width,
+                height: shape.height,
                 href: url
         });
         svgAppend(parent, entityGfx);
@@ -36,3 +36,7 @@ export default function RegularBPMNRenderer(eventBus) {
 }
 inherits(RegularBPMNRenderer, BaseRenderer);
 RegularBPMNRenderer.$inject = [ 'eventBus' ];
+
+RegularBPMNRenderer.prototype.canRender = function(element) {
+    return /^regularBPMN:/.test(element.type);
+  };

@@ -465,10 +465,10 @@ ContextPadProvider.prototype.getContextPadEntries = function (element) {
         });
     }
 
-    assign(actions, {
-        'append.regularBPMN-Resource': createRegularBPMNAction('regularBPMN:Resource', 'regularBPMN', translate('Append Resource'), 'regularBPMN-resource-icon'),
-        'append.regularBPMN-Entity': createRegularBPMNAction('regularBPMN:Entity', 'regularBPMN', translate('Append Entity'), 'regularBPMN-entity-icon')
-    });
+    //assign(actions, {
+    //    'append.regularBPMN-Resource': createRegularBPMNAction('regularBPMN:Resource', 'regularBPMN', translate('Append Resource'), 'regularBPMN-resource-icon'),
+    //    'append.regularBPMN-Entity': createRegularBPMNAction('regularBPMN:Entity', 'regularBPMN', translate('Append Entity'), 'regularBPMN-entity-icon')
+    //});
 
     return actions;
 };

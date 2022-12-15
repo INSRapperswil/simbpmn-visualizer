@@ -178,12 +178,12 @@ export default class PaletteProvider {
                 'bpmn:Group', 'artifact', 'bpmn-icon-group',
                 translate('Create Group')
             ),
-            'create-resource': createAction(
-                'regularBPMN:Resource', 'regularBPMN', 'regularBPMN-resource-icon', translate('Create Resource')
-            ),
-            'create-entity': createAction(
-                'regularBPMN:Entity', 'regularBPMN', 'regularBPMN-entity-icon', translate('Create Entity')
-            ),
+            //'create-resource': createAction(
+            //    'regularBPMN:Resource', 'regularBPMN', 'regularBPMN-resource-icon', translate('Create Resource')
+            //),
+            //'create-entity': createAction(
+            //    'regularBPMN:Entity', 'regularBPMN', 'regularBPMN-entity-icon', translate('Create Entity')
+            //),
         }
     }
 }

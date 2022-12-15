@@ -78,6 +78,25 @@ export default class PaletteProvider {
             create.start(event, elementFactory.createParticipantShape());
         }
 
+        function createRegularBPMNAction(type, group, title, classname) {
+
+            function createListener(event) {
+                var shape = elementFactory.createShape( { type: type });
+
+                create.start(event, shape);
+            }
+
+            return {
+                group: group,
+                className: classname,
+                title: title,
+                action: {
+                    dragstart: createListener,
+                    click: createListener
+                }
+            };
+        }
+
         return {
             'lasso-tool': {
                 group: 'tools',
@@ -158,6 +177,12 @@ export default class PaletteProvider {
             'create.group': createAction(
                 'bpmn:Group', 'artifact', 'bpmn-icon-group',
                 translate('Create Group')
+            ),
+            'create-resource': createAction(
+                'regularBPMN:Resource', 'regularBPMN', 'regularBPMN-resource-icon', translate('Create Resource')
+            ),
+            'create-entity': createAction(
+                'regularBPMN:Entity', 'regularBPMN', 'regularBPMN-entity-icon', translate('Create Entity')
             ),
         }
     }

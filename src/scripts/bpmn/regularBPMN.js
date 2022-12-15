@@ -49,7 +49,7 @@ const bpmnModeler = new BpmnModeler({
     customRulesModules
   ],
   moddleExtensions: {
-    //simbpmn: simBpmnModdleDescriptor,
+    simbpmn: simBpmnModdleDescriptor,
     regularbpmn: regularBpmnModdleDescriptor
   },
 });

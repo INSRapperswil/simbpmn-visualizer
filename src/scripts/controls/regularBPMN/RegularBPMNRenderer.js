@@ -26,8 +26,8 @@ export default function RegularBPMNRenderer(eventBus) {
         var entityGfx = svgCreate('image', {
             x: 0,
                 y: 0,
-                width: shape.width,
-                height: shape.height,
+                width: 50, //shape.width,
+                height: 50, //shape.height,
                 href: url
         });
         svgAppend(parent, entityGfx);

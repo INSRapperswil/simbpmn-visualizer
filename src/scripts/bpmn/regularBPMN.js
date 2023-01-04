@@ -4,6 +4,7 @@ import { debounce } from "min-dash";
 import { BpmnPropertiesPanelModule } from "bpmn-js-properties-panel";
 import BpmnColorPickerModule from "bpmn-js-color-picker";
 import RegularBPMNControlsModule from '../controls/regularBPMN';
+import RegularBPMNRulesModules from '../controls/regularBPMN';
 import minimapModule from "diagram-js-minimap";
 import { logic } from "../logic/logic";
 import { is } from "bpmn-js/lib/util/ModelUtil";
@@ -17,7 +18,6 @@ import ControlsModule from '../controls';
 import bpmnTranslations from "../../translations/bpmn/translations";
 import { toggleSettings } from "../tabs/settings";
 
-import customRulesModules from '../controls/custom-rules';
 
 const container = $("#js-drop-zone");
 const canvas = $("#js-canvas");
@@ -46,7 +46,7 @@ const bpmnModeler = new BpmnModeler({
     //customTranslateModule,
     ControlsModule,
     RegularBPMNControlsModule,
-    customRulesModules
+    RegularBPMNRulesModules
   ],
   moddleExtensions: {
     simbpmn: simBpmnModdleDescriptor,
@@ -184,6 +184,19 @@ window.electronAPI.onOpenXmlFile((event, xml) => {
 });
 
 window.onbeforeunload = (e) => {
+  if (window.electronAPI.isDev()) {
+    // If reload due to code changes should not be a question of dirty but autom. save
+    bpmnModeler
+      .saveXML({ format: true })
+      .then((xml) => {
+        window.electronAPI.saveForQuit(xml.xml).then();
+      })
+      .catch((error) => {
+        console.error("Error happened saving XML: ", error);
+      });
+    window.markAsClean();
+    return;
+  }
   if (window.modelIsDirty) {
     e.preventDefault();
     e.returnValue = false;
@@ -202,7 +215,10 @@ window.checkForDirty = () => {
   return new Promise(resolve => {
     if (window.modelIsDirty) {
       // buttons: ['Yes', 'No', 'Cancel'],
-      const response = window.electronAPI.askForSavingChanges();
+      var response = 1;
+      if (!window.electronAPI.isDev()) {
+        response = window.electronAPI.askForSavingChanges();
+      }
       if (response == 0) {
         bpmnModeler
           .saveXML({ format: true })

@@ -3,8 +3,6 @@
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center center;
-    width: 50px;
-    height: 50px;
 }
 
 .regularBPMN-resource-icon {
@@ -12,6 +10,10 @@
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center center;
+}
+
+.regularBPMN-palette-icon {
+    border: inset 8px transparent;
 }
 
 .canvas .djs-palette-entries .bpmn-icon-participant {

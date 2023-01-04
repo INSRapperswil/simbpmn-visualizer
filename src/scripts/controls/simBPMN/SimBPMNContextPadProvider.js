@@ -51,8 +51,8 @@ export default class SimBPMNContextPadProvider {
 
 
         return {
-            'append.simBPMN-Resource': createSimBPMNAction('simBPMN:Resource', 'simBPMN', translate('Append Resource'), 'simBPMN-resource-icon'),
-            'append.simBPMN-Token': createSimBPMNAction('simBPMN:Token', 'simBPMN', translate('Append Token'), 'simBPMN-token-icon'),
+            //'append.simBPMN-Resource': createSimBPMNAction('simBPMN:Resource', 'simBPMN', translate('Append Resource'), 'simBPMN-resource-icon'),
+            //'append.simBPMN-Token': createSimBPMNAction('simBPMN:Token', 'simBPMN', translate('Append Token'), 'simBPMN-token-icon'),
             'append.simBPMN-Queue': createSimBPMNAction('simBPMN:Queue', 'simBPMN', translate('Append Queue'), 'simBPMN-queue-icon'),
             'append.simBPMN-Server': createSimBPMNAction('simBPMN:Server', 'simBPMN', translate('Append Server'), 'simBPMN-server-icon'),
             'append.simBPMN-Output': createSimBPMNAction('simBPMN:Output', 'simBPMN', translate('Append Output'), 'simBPMN-output-icon')

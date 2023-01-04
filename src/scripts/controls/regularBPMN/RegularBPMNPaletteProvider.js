@@ -36,10 +36,10 @@
 
             return {
                 'create-resource': createRegularBPMNAction(
-                    'regularBPMN:Resource', 'regularBPMN', translate('Create Resource'), 'regularBPMN-resource-icon'
+                    'regularBPMN:Resource', 'regularBPMN', translate('Create Resource'), 'regularBPMN-resource-icon regularBPMN-palette-icon'
                 ),
                 'create-entity': createRegularBPMNAction(
-                    'regularBPMN:Entity', 'regularBPMN', translate('Create Entity'), 'regularBPMN-entity-icon'
+                    'regularBPMN:Entity', 'regularBPMN', translate('Create Entity'), 'regularBPMN-entity-icon regularBPMN-palette-icon'
                 )
             }
         }

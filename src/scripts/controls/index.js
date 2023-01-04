@@ -1,7 +1,7 @@
 import ContextPadProvider from './ContextPadProvider';
 import PaletteProvider from './PaletteProvider';
 import ReplaceMenuProvider from './ReplaceMenuProvider';
-import CustomRules from './custom-rules/CustomRules';
+//import CustomRules from './custom-rules/CustomRules';
 
 export default {
     __init__: [ 'contextPadProvider', 'paletteProvider', 'replaceMenuProvider' ],

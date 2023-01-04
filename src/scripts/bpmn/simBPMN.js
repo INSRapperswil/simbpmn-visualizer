@@ -4,10 +4,11 @@ import BpmnColorPickerModule from "bpmn-js-color-picker";
 import minimapModule from "diagram-js-minimap";
 import ControlsModule from '../controls';
 import SimBPMNControlsModule from '../controls/simBPMN';
+import SimBPMNRulesModules from '../controls/simBPMN';
 import ExtensionPropertiesProvider from '../provider';
 import { BpmnPropertiesPanelModule } from 'bpmn-js-properties-panel';
 import simBpmnModdleDescriptor from "../descriptors/simBPMN.json";
-import CustomRules from '../controls/custom-rules/CustomRules';
+//import CustomRules from '../controls/custom-rules/CustomRules';
 
 import { debounce } from "min-dash";
 
@@ -31,7 +32,7 @@ var bpmnModeler = new BpmnModeler({
     BpmnColorPickerModule,
     ExtensionPropertiesProvider,
     customTranslateModule,
-    CustomRules
+    SimBPMNRulesModules
   ],
   moddleExtensions: {
     simbpmn: simBpmnModdleDescriptor,

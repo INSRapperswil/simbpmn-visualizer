@@ -35,20 +35,20 @@ export default class PaletteProvider {
         }
 
         return {
-            'create-resource': createSimBPMNAction(
-                'simBPMN:Resource', 'simBPMN', translate('Create Resource'), 'simBPMN-resource-icon'
-            ),
+            //'create-resource': createSimBPMNAction(
+            //    'simBPMN:Resource', 'simBPMN', translate('Create Resource'), 'simBPMN-resource-icon simBPMN-palette-icon'
+            //),
             'create-token': createSimBPMNAction(
-                'simBPMN:Token', 'simBPMN', translate('Create Token'), 'simBPMN-token-icon'
+                'simBPMN:Token', 'simBPMN', translate('Create Token'), 'simBPMN-token-icon simBPMN-palette-icon'
             ),
             'create-queue': createSimBPMNAction(
-                'simBPMN:Queue', 'simBPMN', translate('Create Queue'), 'simBPMN-queue-icon'
+                'simBPMN:Queue', 'simBPMN', translate('Create Queue'), 'simBPMN-queue-icon simBPMN-palette-icon'
             ),
             'create-server': createSimBPMNAction(
-                'simBPMN:Server', 'simBPMN', translate('Create Server'), 'simBPMN-server-icon'
+                'simBPMN:Server', 'simBPMN', translate('Create Server'), 'simBPMN-server-icon simBPMN-palette-icon'
             ),
             'create-output': createSimBPMNAction(
-                'simBPMN:Output', 'simBPMN', translate('Create Output'), 'simBPMN-output-icon'
+                'simBPMN:Output', 'simBPMN', translate('Create Output'), 'simBPMN-output-icon simBPMN-palette-icon'
             )
         }
     }

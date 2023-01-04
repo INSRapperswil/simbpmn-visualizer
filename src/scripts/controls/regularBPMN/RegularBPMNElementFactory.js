@@ -13,7 +13,7 @@ import {
   /**
    * A custom factory that knows how to create BPMN _and_ custom elements.
    */
-  export default function CustomElementFactory(bpmnFactory, moddle) {
+  export default function RegularBPMNElementFactory(bpmnFactory, moddle) {
     BpmnElementFactory.call(this, bpmnFactory, moddle);
   
     var self = this;
@@ -35,6 +35,13 @@ import {
   
       // add type to businessObject if regularBPMN
       if (/^regularBPMN:/.test(type)) {
+
+                // add width and height if shape
+                if (!/:connection$/.test(type)) {
+                  assign(attrs, self._getCustomElementSize(type));
+                }
+
+        return self.createBpmnElement(elementType, attrs);
         if (!attrs.businessObject) {
           attrs.businessObject = {
             type: type
@@ -96,9 +103,9 @@ import {
     };
   }
   
-  inherits(CustomElementFactory, BpmnElementFactory);
+  inherits(RegularBPMNElementFactory, BpmnElementFactory);
   
-  CustomElementFactory.$inject = [
+  RegularBPMNElementFactory.$inject = [
     'bpmnFactory',
     'moddle'
   ];
@@ -124,11 +131,11 @@ import {
    *
    * @return {Dimensions} a {width, height} object representing the size of the element
    */
-  CustomElementFactory.prototype._getCustomElementSize = function(type) {
+  RegularBPMNElementFactory.prototype._getCustomElementSize = function(type) {
     var shapes = {
       __default: { width: 100, height: 80 },
-      'regularBPMN:Entity': { width: 50, height: 50 },
-      'regularBPMN:Resource': { width: 50, height: 50 }
+      'regularBPMN:Entity': { width: 40, height: 40 },
+      'regularBPMN:Resource': { width: 40, height: 40 }
     };
   
     return shapes[type] || shapes.__default;

@@ -29,4 +29,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
   askForSavingChanges: () => ipcRenderer.sendSync("askForSavingChanges"),
   saveForQuit: (xml: string) => ipcRenderer.invoke("saveForQuit", xml),
   closeApp: () => ipcRenderer.sendSync("closeApp"),
+  isDev: () => ipcRenderer.sendSync("isDev")
 });

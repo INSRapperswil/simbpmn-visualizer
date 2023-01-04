@@ -50,10 +50,10 @@ export default class RegularBPMNContextPadProvider {
         }
 
 
-        return {
-            'append.regularBPMN-Resource': createRegularBPMNAction('regularBPMN:Resource', 'regularBPMN', translate('Append Resource'), 'regularBPMN-resource-icon'),
-            'append.regularBPMN-Entity': createRegularBPMNAction('regularBPMN:Entity', 'regularBPMN', translate('Append Entity'), 'regularBPMN-entity-icon')
-        };
+        //return {
+        //    'append.regularBPMN-Resource': createRegularBPMNAction('regularBPMN:Resource', 'regularBPMN', translate('Append Resource'), 'regularBPMN-resource-icon'),
+        //    'append.regularBPMN-Entity': createRegularBPMNAction('regularBPMN:Entity', 'regularBPMN', translate('Append Entity'), 'regularBPMN-entity-icon')
+        //};
     }
 }
 

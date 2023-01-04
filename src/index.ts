@@ -129,6 +129,9 @@ app.whenReady().then(() => {
             workspace.createBpmnFile(xml);
             //app.quit();
         });
+        ipcMain.on('isDev', (event) => {
+            event.returnValue = (process.argv[2] === '--dev');
+        })
     })
 
     createWindow();

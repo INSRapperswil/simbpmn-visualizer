@@ -20,16 +20,16 @@ import {
   /**
    * Specific rules for custom elements
    */
-  export default function CustomRules(eventBus) {
+  export default function RegularBPMNRules(eventBus) {
     RuleProvider.call(this, eventBus);
   }
   
-  inherits(CustomRules, RuleProvider);
+  inherits(RegularBPMNRules, RuleProvider);
   
-  CustomRules.$inject = [ 'eventBus' ];
+  RegularBPMNRules.$inject = [ 'eventBus' ];
   
   
-  CustomRules.prototype.init = function() {
+  RegularBPMNRules.prototype.init = function() {
   
     /**
      * Can shape be created on target container?
@@ -41,6 +41,7 @@ import {
         return;
       }
   
+
       // allow creation on processes
       return is(target, 'bpmn:Process') || is(target, 'bpmn:Participant') || is(target, 'bpmn:Collaboration');
     }
@@ -57,18 +58,26 @@ import {
   
       // allow connection between custom shape and task
       if (isCustom(source)) {
-        if (is(target, 'bpmn:Task')) {
-          return { type: 'custom:connection' };
+        if(is(target, "bpmn:Process")) {
+          return false;
+        }
+        if (is(source, 'regularBPMN:Entity') && !isCustom(target)) {
+          return { type: 'bpmn:Association' };
+        } else if(is(source, 'regularBPMN:Resource') && !isCustom(target)) {
+          return { type: 'bpmn:Association' };
         } else {
           return false;
         }
       } else if (isCustom(target)) {
-        if (is(source, 'bpmn:Task')) {
-          return { type: 'custom:connection' };
+        if (is(source, 'regularBPMN:Entity') && !isCustom(source)) {
+          return { type: 'bpmn:Association' };
+        } else if(is(source, 'regularBPMN:Resource') && !isCustom(source)) {
+          return { type: 'bpmn:Association' };
         } else {
           return false;
         }
       }
+      console.log(10);
     }
   
     this.addRule('elements.move', HIGH_PRIORITY, function(context) {
@@ -135,5 +144,5 @@ import {
   
       return canConnect(source, target, connection);
     });
-  
+
   };

@@ -1,3 +1,11 @@
+import {
+    is
+} from '../../utils/ModelUtil';
+
+import {
+    Priority
+} from '../../utils/ModelUtil';
+
 export default class RegularBPMNContextPadProvider {
     constructor(config, contextPad, create, elementFactory, injector, translate) {
         this.create = create;
@@ -8,52 +16,24 @@ export default class RegularBPMNContextPadProvider {
             this.autoPlace = injector.get('autoPlace', false);
         }
 
-        contextPad.registerProvider(this);
+        // Insert with LOW_PRIORITY so that e.g. set-color can be removed from the ColorContextPadProvider
+        contextPad.registerProvider(Priority.Low, this);
     }
 
     getContextPadEntries(element) {
-        const {
-            autoPlace,
-            create,
-            elementFactory,
-            translate
-        } = this;
-
-
-        function createRegularBPMNAction(type, group, title, classname) {
-
-            function createDragListener(event) {
-                var shape = elementFactory.createShape( { type: type });
-
-                create.start(event, shape);
+        return function(entries) {     
+            if(is(element, "regularBPMN:Entity") || is(element, "regularBPMN:Resource")) {
+                Object.keys(entries).forEach(function (k) {
+                    if (k.startsWith('append.')) {
+                        delete entries[k];
+                    }
+                });
+                delete entries["replace"]; 
+                delete entries["set-color"]; 
             }
 
-            function createListener(event, element) {
-                if(autoPlace) {
-                    const shape = elementFactory.createShape({type: type});
-
-                    autoPlace.append(element, shape);
-                } else {
-                    createDragListener(event);
-                }
-            }
-
-            return {
-                group: group,
-                className: classname,
-                title: title,
-                action: {
-                    dragstart: createListener,
-                    click: createListener
-                }
-            };
-        }
-
-
-        //return {
-        //    'append.regularBPMN-Resource': createRegularBPMNAction('regularBPMN:Resource', 'regularBPMN', translate('Append Resource'), 'regularBPMN-resource-icon'),
-        //    'append.regularBPMN-Entity': createRegularBPMNAction('regularBPMN:Entity', 'regularBPMN', translate('Append Entity'), 'regularBPMN-entity-icon')
-        //};
+            return entries;
+          };
     }
 }
 

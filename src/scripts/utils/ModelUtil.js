@@ -2,6 +2,11 @@ import {
     some
 } from 'min-dash';
 
+export const Priority = {
+    Low: 500,
+    Default: 1000,
+    High: 1500
+}
 
 /**
  * Is an element of the given BPMN type?
@@ -65,17 +70,59 @@ export function getDi(element) {
 export function getParent(element, anyType) {
 
     if (typeof anyType === 'string') {
-        anyType = [ anyType ];
+      anyType = [ anyType ];
     }
-
-    while ((element = element.parent)) {
+  
+    while ((element = element.$parent || element.parent)) {
+      if (anyType) {
         if (isAny(element, anyType)) {
-            return element;
+          return element;
         }
+      }
+      else {
+        return element;
+      }
     }
-
+  
     return null;
-}
+  }
+
+/**
+ * Return the parents of the element with any of the given types.
+ *
+ * @param {ModdleElement} element
+ * @param {String|Array<String>} anyType
+ *
+ * @return {Array<ModdleElement>}
+ */
+export function getParents(element, anyType) {
+
+    var parents = [];
+  
+    if (typeof anyType === 'string') {
+      anyType = [ anyType ];
+    }
+  
+    while (element) {
+      element = element.$parent || element.parent;
+  
+      if (element) {
+  
+        if (anyType) {
+          if (isAny(element, anyType)) {
+            parents.push(element);
+          }
+        }
+        else {
+          parents.push(element);
+        }
+  
+      }
+  
+    }
+  
+    return parents;
+  }
 
 export function isLabel(element) {
     return element && !!element.labelTarget;

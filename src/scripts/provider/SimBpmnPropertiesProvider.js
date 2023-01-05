@@ -7,8 +7,9 @@ import { ValidationPropertiesProps } from './properties/ValidationPropertiesProp
 import { NameProps } from './properties/NameProps'
 import { DocumentationProps } from './properties/DocumentationProps'
 
-const LOW_PRIORITY = 500;
-
+import {
+  Priority
+} from '../utils/ModelUtil';
 
 /**
  * A provider with a `#getGroups(element)` method
@@ -50,7 +51,7 @@ const LOW_PRIORITY = 500;
       }
     };
 
-    propertiesPanel.registerProvider(LOW_PRIORITY, this);
+    propertiesPanel.registerProvider(Priority.Low, this);
 }
 
 SimBpmnPropertiesProvider.$inject = [ 'propertiesPanel', 'injector' ];

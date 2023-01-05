@@ -7,10 +7,9 @@ import SimBPMNElementFactory from "./SimBPMNElementFactory";
 
 export default {
     __init__: [ 'simBPMNPaletteProvider','renderer', 'simBPMNRules', 'simBPMNContextPadProvider' ],
-
+    simBPMNContextPadProvider: [ 'type' , SimBPMNContextPadProvider],
     elementFactory: [ 'type', SimBPMNElementFactory ],
     simBPMNPaletteProvider: [ 'type', SimBPMNPaletteProvider ],
     renderer: [ 'type', SimBPMNRenderer ],
-    simBPMNContextPadProvider: [ 'type' , SimBPMNContextPadProvider],
     simBPMNRules: [ 'type', SimBPMNRules ],
 };

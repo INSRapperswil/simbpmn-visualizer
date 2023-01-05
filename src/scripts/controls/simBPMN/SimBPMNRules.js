@@ -8,10 +8,11 @@ import {
     is
   } from 'bpmn-js/lib/util/ModelUtil';
   
+  import {
+    Priority
+} from '../../utils/ModelUtil';
+
   import RuleProvider from 'diagram-js/lib/features/rules/RuleProvider';
-  
-  var HIGH_PRIORITY = 1500;
-  
   
   function isCustom(element) {
     return element && /^simBPMN:/.test(element.type);
@@ -80,7 +81,7 @@ import {
       console.log(10);
     }
   
-    this.addRule('elements.move', HIGH_PRIORITY, function(context) {
+    this.addRule('elements.move', Priority.High, function(context) {
   
       var target = context.target,
           shapes = context.shapes;
@@ -106,14 +107,14 @@ import {
       return allowed;
     });
   
-    this.addRule('shape.create', HIGH_PRIORITY, function(context) {
+    this.addRule('shape.create', Priority.High, function(context) {
       var target = context.target,
           shape = context.shape;
   
       return canCreate(shape, target);
     });
   
-    this.addRule('shape.resize', HIGH_PRIORITY, function(context) {
+    this.addRule('shape.resize', Priority.High, function(context) {
       var shape = context.shape;
   
       if (isCustom(shape)) {
@@ -122,14 +123,14 @@ import {
       }
     });
   
-    this.addRule('connection.create', HIGH_PRIORITY, function(context) {
+    this.addRule('connection.create', Priority.High, function(context) {
       var source = context.source,
           target = context.target;
   
       return canConnect(source, target);
     });
   
-    this.addRule('connection.reconnectStart', HIGH_PRIORITY, function(context) {
+    this.addRule('connection.reconnectStart', Priority.High, function(context) {
       var connection = context.connection,
           source = context.hover || context.source,
           target = connection.target;
@@ -137,7 +138,7 @@ import {
       return canConnect(source, target, connection);
     });
   
-    this.addRule('connection.reconnectEnd', HIGH_PRIORITY, function(context) {
+    this.addRule('connection.reconnectEnd', Priority.High, function(context) {
       var connection = context.connection,
           source = connection.source,
           target = context.hover || context.target;

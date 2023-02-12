@@ -39,6 +39,7 @@ function createWindow() {
     buildMenu(app, mainWindow);
 
     //--------------------------------------------DEV------------------------
+    // yarn start -- -- -- --dev
     if (process.argv[2] === '--dev') {
        mainWindow.webContents.openDevTools();
     }
@@ -192,6 +193,10 @@ ipcMain.handle("saveLogicRelay", (event: any, xml: string) => {
 ipcMain.handle("openLogicRelay", (event: any, xml: string) => {
     //console.log("relaying open logic");
     mainWindow.webContents.send('openLogic', xml);
+});
+
+ipcMain.handle("adjustResourcesInLogicRelay", (event: any, resources: []) => {
+    return mainWindow.webContents.send('adjustResourcesInLogic', resources);
 });
 
 //----------------------------------------------------------------

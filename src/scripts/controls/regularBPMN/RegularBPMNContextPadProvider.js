@@ -29,7 +29,7 @@ export default class RegularBPMNContextPadProvider {
                     }
                 });
                 delete entries["replace"]; 
-                delete entries["set-color"]; 
+                //delete entries["set-color"]; 
             }
 
             return entries;

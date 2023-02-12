@@ -1,7 +1,8 @@
 import inherits from 'inherits';
 import BaseRenderer from 'diagram-js/lib/draw/BaseRenderer';
 import {
-    is
+  is,
+  getBusinessObject
 } from 'bpmn-js/lib/util/ModelUtil';
 import Resource from './source/resource';
 import Token from './source/token';
@@ -9,9 +10,17 @@ import Queue from './source/queue';
 import Server from './source/server';
 import Output from './source/output';
 import {
-    append as svgAppend,
-    create as svgCreate
+  append as svgAppend,
+  attr as svgAttr,
+  create as svgCreate,
+  remove as svgRemove,
+  innerSVG
 } from 'tiny-svg';
+import {
+  Priority
+} from '../../utils/ModelUtil';
+
+
 
 export default function SimBPMNRenderer(eventBus) {
     BaseRenderer.call(this, eventBus, 1500);
@@ -32,15 +41,41 @@ export default function SimBPMNRenderer(eventBus) {
         } else if(is(shape, "simBPMN:Output")){
             url = Output.dataURL;
         }
-        var entityGfx = svgCreate('image', {
+
+        var width = shape.width,
+        height = shape.height;
+  
+        var svg = svgCreate('image', {
             x: 0,
                 y: 0,
-                width: shape.width,
-                height: shape.height,
+                width: width,
+                height: height,
                 href: url
         });
-        svgAppend(parent, entityGfx);
-        return entityGfx;
+        svgAppend(parent, svg);
+
+        var bo = getBusinessObject(shape);
+   
+        if (bo.name) {
+          var lines = bo.name.trim().split('\n');
+          var textArea = svgCreate('text');
+          var text = '';
+          var fontsize = 12;
+          for (var i = 0; i < lines.length; ++i) {
+            text += '<tspan x="' + width / 2 + '" y="+' + (height + 16) + '">' + lines[i] + '</tspan>';
+          }
+          innerSVG(textArea, text);
+          svgAttr(textArea, {
+            fontFamily: 'Arial, sans-serif',
+            fontSize: fontsize,
+            textAnchor: 'middle',
+            width: width,
+            x: width,
+            y: 0
+          });
+          svgAppend(parent, textArea);
+        }        
+        return svg;
     };
 }
 inherits(SimBPMNRenderer, BaseRenderer);

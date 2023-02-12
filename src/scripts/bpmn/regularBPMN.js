@@ -5,9 +5,10 @@ import { BpmnPropertiesPanelModule } from "bpmn-js-properties-panel";
 import BpmnColorPickerModule from "bpmn-js-color-picker";
 import RegularBPMNControlsModule from '../controls/regularBPMN';
 import RegularBPMNRulesModules from '../controls/regularBPMN';
+import RegularBPMNLabelEditingProvider  from '../controls/regularBPMN';
 import minimapModule from "diagram-js-minimap";
 import { logic } from "../logic/logic";
-import { is } from "bpmn-js/lib/util/ModelUtil";
+import { is, getBusinessObject } from "bpmn-js/lib/util/ModelUtil";
 
 import ExtensionPropertiesProvider from "../provider";
 import simBpmnModdleDescriptor from "../descriptors/simBPMN.json";
@@ -46,7 +47,8 @@ const bpmnModeler = new BpmnModeler({
     //customTranslateModule,
     ControlsModule,
     RegularBPMNControlsModule,
-    RegularBPMNRulesModules
+    RegularBPMNRulesModules,
+    RegularBPMNLabelEditingProvider 
   ],
   moddleExtensions: {
     simbpmn: simBpmnModdleDescriptor,
@@ -277,6 +279,12 @@ function selectShape(shape) {
   //load logic xml if existing
   const xml = simBPMNLogic.readLogic(_currentBusinessObject);
   window.electronAPI.openLogicRelay(xml);
+
+  if(is(shape, "bpmn:Task")) {
+    // when new task is created, it will have default-resource which has to be added to logic
+    // do this here, because logic will only be created here
+    adjustResourcesInLogic(shape);
+  }
 }
 
 function showHideLogic(hide) {
@@ -295,8 +303,60 @@ eventBus.on('elements.changed', function (context) {
 });
 
 eventBus.on('commandStack.shape.create.executed', function (event) {
-  console.log("shape added");
+  const context = event.context;
+  const shape = context.shape;
+  console.log("shape added: ", shape);
 });
+
+eventBus.on("commandStack.connection.create.postExecuted", function (event) {
+  console.log("connection created");
+
+  const context = event.context;
+  const source = context.source;
+  const target = context.target;
+  
+  //console.log("Source:", source);
+  //console.log("Target:", target);
+
+  if(is(source, "regularBPMN:Resource")) {
+    //console.log("Association to resource");
+    adjustResourcesInLogic(target);
+  }
+});
+
+eventBus.on("commandStack.connection.delete.preExecute", function (event) {
+  const { context } = event;
+
+  const { connection } = context;
+
+  //console.log("Context:", context);
+  //console.log("Connection:", connection)
+  //console.log("Parent:", connection.parent);
+  //console.log("Source:", connection.source);
+  //console.log("Target:", connection.target);
+
+  if(is(connection.source, "regularBPMN:Resource")) {
+    adjustResourcesInLogic(connection.target);
+  }
+});
+
+function adjustResourcesInLogic(shape) {
+  console.log("adjust resources for", shape);
+  // get all resources connected to shape
+  const incoming = shape.incoming || [];
+  const resources = incoming.reduce((resources, connection) => {
+    if(is(connection.source, "regularBPMN:Resource")) {
+      var bo = getBusinessObject(connection.source);
+      resources.push([connection.source, bo.name]);
+    }
+    return resources;
+  }, []);
+
+  if(is(shape, "bpmn:Task")) {
+    resources.push(["default", "default"]);
+  }
+  window.electronAPI.adjustResourcesInLogicRelay(resources);
+}
 
 window.markAsDirty = () => {
   window.modelIsDirty = true;

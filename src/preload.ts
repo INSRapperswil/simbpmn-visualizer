@@ -1,4 +1,5 @@
 import { ipcRenderer, contextBridge } from 'electron';
+import { Callbacks } from 'jquery';
 
 contextBridge.exposeInMainWorld('electronAPI', {
   addAttachment: () => ipcRenderer.invoke('addAttachment'),
@@ -11,6 +12,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   deleteFile: (path: string) => ipcRenderer.invoke("deleteFile", path),
   saveLogicRelay: (xml: string) => ipcRenderer.invoke("saveLogicRelay", xml),
   openLogicRelay: (xml: string) => ipcRenderer.invoke("openLogicRelay", xml),
+  adjustResourcesInLogicRelay: (resources: []) => ipcRenderer.invoke("adjustResourcesInLogicRelay", resources),
   exportBPMN: () => ipcRenderer.invoke("exportBPMN"),
   importBPMN: () => ipcRenderer.invoke("importBPMN"),
   changeWorkspaceLocation: () => ipcRenderer.invoke("changeWorkspaceLocation"),
@@ -26,6 +28,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onOpenXmlFile: (callback: any) => ipcRenderer.on("openXmlFile", callback),
   saveLogic: (callback: any) => ipcRenderer.on("saveLogic", callback),
   openLogic: (callback: any) => ipcRenderer.on("openLogic", callback),
+  adjustResourcesInLogic: (callback: any) => ipcRenderer.on("adjustResourcesInLogic", callback),
   askForSavingChanges: () => ipcRenderer.sendSync("askForSavingChanges"),
   saveForQuit: (xml: string) => ipcRenderer.invoke("saveForQuit", xml),
   closeApp: () => ipcRenderer.sendSync("closeApp"),

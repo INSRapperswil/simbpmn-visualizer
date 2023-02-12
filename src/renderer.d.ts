@@ -7,6 +7,7 @@ export interface IElectronAPI {
     registerNewFile: (filename: string) => Promise<void>
 	saveLogic: (xml:string) => Promise<void>
     openLogic: (xml:string) => Promise<void>
+    adjustResourcesInLogic: (resources: []) => Promise<void>
     getTranslation: (translation: string) => Promise<string>
     saveForQuit: (xml:string) => Promise<void>
     closeApp: () => Promise<void>

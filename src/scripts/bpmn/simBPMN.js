@@ -8,6 +8,7 @@ import SimBPMNRulesModules from '../controls/simBPMN';
 import ExtensionPropertiesProvider from '../provider';
 import { BpmnPropertiesPanelModule } from 'bpmn-js-properties-panel';
 import simBpmnModdleDescriptor from "../descriptors/simBPMN.json";
+import SimBPMNLabelEditingProvider  from '../controls/simBPMN';
 //import CustomRules from '../controls/custom-rules/CustomRules';
 
 import { debounce } from "min-dash";
@@ -15,6 +16,9 @@ import { debounce } from "min-dash";
 import diagramXML from "../../resources/newDiagram.bpmn";
 
 import bpmnTranslations from "../../translations/bpmn/translations";
+import { is,
+  getBusinessObject
+ } from "bpmn-js/lib/util/ModelUtil";
 
 var canvas = $("#js-simbpmncanvas");
 
@@ -32,7 +36,8 @@ var bpmnModeler = new BpmnModeler({
     BpmnColorPickerModule,
     ExtensionPropertiesProvider,
     customTranslateModule,
-    SimBPMNRulesModules
+    SimBPMNRulesModules,
+    SimBPMNLabelEditingProvider 
   ],
   moddleExtensions: {
     simbpmn: simBpmnModdleDescriptor,
@@ -70,4 +75,51 @@ bpmnModeler.on("commandStack.changed", exportArtifacts);
 window.electronAPI.openLogic((event, xml) => {
   console.log("opening logic");
   opensimBPMNDiagram(xml);
+});
+
+window.electronAPI.adjustResourcesInLogic((event, resources) => {
+  console.log("adjust resources in logic: ", resources);
+
+  let elementFactory = bpmnModeler.get('elementFactory');
+  let elementRegistry = bpmnModeler.get('elementRegistry');
+  let moddle = bpmnModeler.get('moddle');
+  let modeling = bpmnModeler.get('modeling');
+  let root = bpmnModeler.get('canvas').getRootElement();
+
+  const ids = [];
+  let cnt = 0;
+  resources.forEach(element => {
+    var shape;
+    var id;
+    var name;
+    if (typeof element[0] === 'string') {
+      id = "Resource_" + element;
+    } else {
+      id = element.id;
+    }
+    name = element[1];
+    ids.push(id);
+    shape = elementRegistry.get(id);
+
+    if (!shape) {
+      let resource = elementFactory.createShape({
+        type: 'simBPMN:Resource'
+      });
+
+      resource.businessObject["id"] = id;
+      resource.businessObject["name"] = name;
+      modeling.createShape(resource, { x: 300 + (cnt*50), y: 100 }, root);    
+    }
+    cnt++;
+  });
+
+  elementRegistry.getAll().forEach(shape => {
+    if(is(shape, "simBPMN:Resource")) {
+      let id = shape.businessObject["id"];
+      if(!ids.some(x => x === id)) {
+        modeling.removeShape(shape);
+      }
+    }
+
+  })
 });

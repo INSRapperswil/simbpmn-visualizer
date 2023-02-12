@@ -31,7 +31,10 @@ export function isLabelExternal(semantic) {
          is(semantic, 'bpmn:Group') ||
          is(semantic, 'regularBPMN:Resource') ||
          is(semantic, 'regularBPMN:Entity') ||
-         is(semantic, 'simBPMN:Resource');
+         is(semantic, 'simBPMN:Resource') ||
+         is(semantic, 'simBPMN:Queue') ||
+         is(semantic, 'simBPMN:Server') ||
+         is(semantic, 'simBPMN:Output');
 }
 
 /**

@@ -80,6 +80,7 @@ window.electronAPI.openLogic((event, xml) => {
 window.electronAPI.adjustResourcesInLogic((event, resources) => {
   console.log("adjust resources in logic: ", resources);
 
+  
   let elementFactory = bpmnModeler.get('elementFactory');
   let elementRegistry = bpmnModeler.get('elementRegistry');
   let moddle = bpmnModeler.get('moddle');
@@ -93,9 +94,9 @@ window.electronAPI.adjustResourcesInLogic((event, resources) => {
     var id;
     var name;
     if (typeof element[0] === 'string') {
-      id = "Resource_" + element;
+      id = "Resource_" + element[0];
     } else {
-      id = element.id;
+      id = element[0].id;
     }
     name = element[1];
     ids.push(id);

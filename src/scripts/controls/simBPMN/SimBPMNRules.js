@@ -69,8 +69,9 @@ SimBPMNRules.prototype.init = function () {
       return;
     }
 
+
     // allow connection between custom shape and task
-    if (isCustom(source)) {
+    if (is(source, "simBPMN:Token") || is(source, "simBPMN:Resource")) {
       if (is(target, "bpmn:Process")) {
         return false;
       }
@@ -81,7 +82,7 @@ SimBPMNRules.prototype.init = function () {
       } else {
         return false;
       }
-    } else if (isCustom(target)) {
+    } else if (is(target, "simBPMN:Token") || is(target, "simBPMN:Resource")) {
       if (is(source, 'simBPMN:Token') && !is(target, 'simBPMN:Token') && !is(target, 'simBPMN:Resource')) {
         return { type: 'bpmn:Association' };
       } else if (is(source, 'simBPMN:Resource') && !is(target, 'simBPMN:Token') && !is(target, 'simBPMN:Resource')) {

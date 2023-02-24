@@ -197,6 +197,11 @@
           "LogicObject"
         ],
         "properties": [
+          {
+            "name": "isFromParent",
+            "type": "bool",
+            "isAttr": true
+          }
         ]
       }
     ]

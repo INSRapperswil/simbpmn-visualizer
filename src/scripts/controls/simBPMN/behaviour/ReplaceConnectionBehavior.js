@@ -18,9 +18,6 @@ export default function ReplaceConnectionBehavior(eventBus, modeling, bpmnRules,
     var dragging = injector.get('dragging', false);
 
     function fixConnection(connection) {
-
-        console.log("abc");
-        
         var source = connection.source,
             target = connection.target,
             parent = connection.parent;

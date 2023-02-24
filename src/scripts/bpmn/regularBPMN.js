@@ -5,7 +5,7 @@ import { BpmnPropertiesPanelModule } from "bpmn-js-properties-panel";
 import BpmnColorPickerModule from "bpmn-js-color-picker";
 import RegularBPMNControlsModule from '../controls/regularBPMN';
 import RegularBPMNRulesModules from '../controls/regularBPMN';
-import RegularBPMNLabelEditingProvider  from '../controls/regularBPMN';
+import RegularBPMNLabelEditingProvider from '../controls/regularBPMN';
 import minimapModule from "diagram-js-minimap";
 import { logic } from "../logic/logic";
 import { is, getBusinessObject } from "bpmn-js/lib/util/ModelUtil";
@@ -18,6 +18,7 @@ import ControlsModule from '../controls';
 
 import bpmnTranslations from "../../translations/bpmn/translations";
 import { toggleSettings } from "../tabs/settings";
+import { isExpanded } from "../utils/DiUtil";
 
 
 const container = $("#js-drop-zone");
@@ -48,7 +49,7 @@ const bpmnModeler = new BpmnModeler({
     ControlsModule,
     RegularBPMNControlsModule,
     RegularBPMNRulesModules,
-    RegularBPMNLabelEditingProvider 
+    RegularBPMNLabelEditingProvider
   ],
   moddleExtensions: {
     simbpmn: simBpmnModdleDescriptor,
@@ -280,10 +281,10 @@ function selectShape(shape) {
   const xml = simBPMNLogic.readLogic(_currentBusinessObject);
   window.electronAPI.openLogicRelay(xml);
 
-  if(is(shape, "bpmn:Task")) {
+  if (is(shape, "bpmn:Task") ) {
     // when new task is created, it will have default-resource which has to be added to logic
     // do this here, because logic will only be created here
-    adjustResourcesInLogic(shape);
+    adjustResources(shape);
   }
 }
 
@@ -314,13 +315,13 @@ eventBus.on("commandStack.connection.create.postExecuted", function (event) {
   const context = event.context;
   const source = context.source;
   const target = context.target;
-  
+
   //console.log("Source:", source);
   //console.log("Target:", target);
 
-  if(is(source, "regularBPMN:Resource")) {
+  if (is(source, "regularBPMN:Resource")) {
     //console.log("Association to resource");
-    adjustResourcesInLogic(target);
+    adjustResources(target);
   }
 });
 
@@ -335,27 +336,119 @@ eventBus.on("commandStack.connection.delete.preExecute", function (event) {
   //console.log("Source:", connection.source);
   //console.log("Target:", connection.target);
 
-  if(is(connection.source, "regularBPMN:Resource")) {
-    adjustResourcesInLogic(connection.target);
+  if (is(connection.source, "regularBPMN:Resource")) {
+    adjustResources(connection.target, connection.source);
   }
 });
 
-function adjustResourcesInLogic(shape) {
-  console.log("adjust resources for", shape);
+function adjustResources(shape, disconnectingResource) {
+  adjustResourcesInLogic(shape, disconnectingResource);
+  if (is(shape, 'bpmn:SubProcess')) {
+    adjustResourcesInSubprocess(shape, disconnectingResource);
+  }
+}
+
+function adjustResourcesInLogic(shape, disconnectingResource) {
+  console.log("adjust resources in logic for", shape);
   // get all resources connected to shape
   const incoming = shape.incoming || [];
   const resources = incoming.reduce((resources, connection) => {
-    if(is(connection.source, "regularBPMN:Resource")) {
+    if (is(connection.source, "regularBPMN:Resource") && (!disconnectingResource || disconnectingResource != connection.source)) {
       var bo = getBusinessObject(connection.source);
       resources.push([connection.source, bo.name]);
     }
     return resources;
   }, []);
 
-  if(is(shape, "bpmn:Task")) {
+  if (is(shape, "bpmn:Task")) {
     resources.push(["default", "default"]);
   }
   window.electronAPI.adjustResourcesInLogicRelay(resources);
+}
+
+function adjustResourcesInSubprocess(shape, disconnectingResource) {
+  console.log("adjust resources in subprocess for", shape);
+
+  const incoming = shape.incoming || [];
+  const resources = incoming.reduce((resources, connection) => {
+    if (is(connection.source, "regularBPMN:Resource") && (!disconnectingResource || disconnectingResource != connection.source)) {
+      var bo = getBusinessObject(connection.source);
+      resources.push([connection.source, bo.name]);
+    }
+    return resources;
+  }, []);
+
+
+  let elementFactory = bpmnModeler.get('elementFactory');
+  let elementRegistry = bpmnModeler.get('elementRegistry');
+  let moddle = bpmnModeler.get('moddle');
+  let modeling = bpmnModeler.get('modeling');
+  //let root = bpmnModeler.get('canvas').getRootElement();
+
+  let root = shape;
+  if(!isExpanded(shape)) {
+    // https://forum.bpmn.io/t/programmatically-populate-collapsed-subprocess/7504/3?u=symas
+    root = elementRegistry.get(`${shape.id}_plane`);
+  }
+
+  const ids = [];
+  let cnt = 0;
+  resources.forEach(element => {
+    var existingResource;
+    var id;
+    var name;
+    if (typeof element[0] === 'string') {
+      id = "Resource_" + element[0];
+    } else {
+      id = element[0].id;
+    }
+    id = `${shape.id}_${id}`;
+    name = element[1];
+    ids.push(id);
+    existingResource = elementRegistry.get(id);
+
+    if (!existingResource) {
+      let resource = elementFactory.createShape({
+        type: 'regularBPMN:Resource'
+      });
+
+      resource.businessObject["id"] = id;
+      resource.businessObject["name"] = name;
+      resource.businessObject["isFromParent"] = true;
+      resource.id = id;
+      var x = 300 + (cnt*50);
+      var y = 100;
+      if(isExpanded(shape)) {
+        x += shape.x;
+        y += shape.y;
+      }
+      modeling.createShape(resource, { x: x, y: y }, root);    
+    }
+    cnt++;
+  });
+
+  
+
+  elementRegistry.getAll().forEach(shape => {
+    if(is(shape, "regularBPMN:Resource")) {
+      let id = shape.businessObject["id"];
+      if(shape.businessObject.isFromParent && !ids.some(x => x === id)) {
+        modeling.removeShape(shape);
+      }
+    }
+
+  });
+
+
+  // resources.forEach(element => {
+  //   let resource = elementFactory.createShape({
+  //     type: 'regularBPMN:Resource'
+  //   });
+
+  //   //resource.businessObject["id"] = id;
+  //   resource.businessObject["name"] = "abc";
+  //   modeling.createShape(resource, { x: 300 + (cnt * 50), y: 100 }, root);
+  // });
 }
 
 window.markAsDirty = () => {

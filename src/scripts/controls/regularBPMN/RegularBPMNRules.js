@@ -18,13 +18,9 @@ import {
   getParents,
 } from '../../utils/ModelUtil';
 
-
-
-
 function isCustom(element) {
   return element && /^regularBPMN:/.test(element.type);
 }
-
 
 function isParent(possibleParent, element) {
   var allParents = getParents(element);
@@ -34,7 +30,6 @@ function isParent(possibleParent, element) {
 function isConnection(element) {
   return element.waypoints;
 }
-
 /**
  * Specific rules for custom elements
  */
@@ -61,7 +56,7 @@ RegularBPMNRules.prototype.init = function () {
 
 
     // allow creation on processes
-    return is(target, 'bpmn:Process') || is(target, 'bpmn:Participant') || is(target, 'bpmn:Collaboration');
+    return is(target, 'bpmn:Process') || is(target, 'bpmn:Participant') || is(target, 'bpmn:Collaboration') || is(target, 'bpmn:SubProcess');
   }
 
   /**
@@ -163,17 +158,29 @@ RegularBPMNRules.prototype.init = function () {
     return canConnect(source, target, connection);
   });
 
-};
 
-RegularBPMNRules.prototype.canConnectAssociation = function (source, target) {
 
-  // do not connect connections
-  if (isConnection(source) || isConnection(target)) {
-    return false;
-  }
+  RegularBPMNRules.prototype.canConnectAssociation = function (source, target) {
 
-  // connect if different parent
-  return !isParent(target, source) &&
-    !isParent(source, target);
+    // do not connect connections
+    if (isConnection(source) || isConnection(target)) {
+      return false;
+    }
+
+    // connect if different parent
+    return !isParent(target, source) &&
+      !isParent(source, target);
+
+  };
+
+  this.addRule('elements.delete', function (context) {
+    // allow only some
+    return context.elements.filter(function (e) {
+      if(e.businessObject.$instanceOf('regularBPMN:Resource')) {
+        return !e.businessObject.isFromParent;
+      }
+      return true;
+    });
+  });
 
 };

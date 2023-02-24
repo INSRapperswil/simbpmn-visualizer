@@ -163,11 +163,11 @@ SimBPMNRules.prototype.init = function () {
     if (isConnection(source) || isConnection(target)) {
       return false;
     }
-  
+
     // connect if different parent
     return !isParent(target, source) &&
       !isParent(source, target);
-  
+
   };
 
   this.addRule('elements.delete', function (context) {

@@ -208,6 +208,30 @@
         ]
       },
       {
+        "name": "ServerSeize",
+        "superClass": [
+          "LogicObject"
+        ],
+        "properties": [
+        ]
+      },
+      {
+        "name": "ServerDelay",
+        "superClass": [
+          "LogicObject"
+        ],
+        "properties": [
+        ]
+      },
+      {
+        "name": "ServerRelease",
+        "superClass": [
+          "LogicObject"
+        ],
+        "properties": [
+        ]
+      },
+      {
         "name": "Output",
         "superClass": [
           "LogicObject"

@@ -16,5 +16,5 @@ export default {
       // Here we overwrite the bpmnjs provider by giving ours the same name
       labelEditingProvider: [ 'type', SimBPMNLabelEditingProvider ], 
       replaceConnectionBehavior: [ 'type', ReplaceConnectionBehavior],
-      simBPMNRules: [ 'type', SimBPMNRules ],
+      simBPMNRules: [ 'type', SimBPMNRules ]
 };

@@ -281,7 +281,7 @@ function selectShape(shape) {
   const xml = simBPMNLogic.readLogic(_currentBusinessObject);
   window.electronAPI.openLogicRelay(xml);
 
-  if (is(shape, "bpmn:Task") ) {
+  if (is(shape, "bpmn:Task")) {
     // when new task is created, it will have default-resource which has to be added to logic
     // do this here, because logic will only be created here
     adjustResources(shape);
@@ -386,7 +386,7 @@ function adjustResourcesInSubprocess(shape, disconnectingResource) {
   //let root = bpmnModeler.get('canvas').getRootElement();
 
   let root = shape;
-  if(!isExpanded(shape)) {
+  if (!isExpanded(shape)) {
     // https://forum.bpmn.io/t/programmatically-populate-collapsed-subprocess/7504/3?u=symas
     root = elementRegistry.get(`${shape.id}_plane`);
   }
@@ -416,23 +416,23 @@ function adjustResourcesInSubprocess(shape, disconnectingResource) {
       resource.businessObject["name"] = name;
       resource.businessObject["isFromParent"] = true;
       resource.id = id;
-      var x = 300 + (cnt*50);
+      var x = 300 + (cnt * 50);
       var y = 100;
-      if(isExpanded(shape)) {
+      if (isExpanded(shape)) {
         x += shape.x;
         y += shape.y;
       }
-      modeling.createShape(resource, { x: x, y: y }, root);    
+      modeling.createShape(resource, { x: x, y: y }, root);
     }
     cnt++;
   });
 
-  
+
 
   elementRegistry.getAll().forEach(shape => {
-    if(is(shape, "regularBPMN:Resource")) {
+    if (is(shape, "regularBPMN:Resource")) {
       let id = shape.businessObject["id"];
-      if(shape.businessObject.isFromParent && !ids.some(x => x === id)) {
+      if (shape.businessObject.isFromParent && !ids.some(x => x === id)) {
         modeling.removeShape(shape);
       }
     }

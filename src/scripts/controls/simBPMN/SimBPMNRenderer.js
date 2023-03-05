@@ -8,6 +8,9 @@ import Resource from './source/resource';
 import Token from './source/token';
 import Queue from './source/queue';
 import Server from './source/server';
+import ServerSeize from './source/server_seize';
+import ServerDelay from './source/server_delay';
+import ServerRelease from './source/server_release';
 import Output from './source/output';
 import {
   append as svgAppend,
@@ -26,7 +29,7 @@ export default function SimBPMNRenderer(eventBus) {
     BaseRenderer.call(this, eventBus, 1500);
 
     this.canRender = function(element) {
-        return is(element, 'simBPMN:Resource') || is(element, 'simBPMN:Token') || is(element, 'simBPMN:Queue') || is(element, 'simBPMN:Server') || is(element, 'simBPMN:Output');
+        return is(element, 'simBPMN:Resource') || is(element, 'simBPMN:Token') || is(element, 'simBPMN:Queue') || is(element, 'simBPMN:Server') || is(element, 'simBPMN:ServerSeize') || is(element, 'simBPMN:ServerDelay') || is(element, 'simBPMN:ServerRelease') || is(element, 'simBPMN:Output');
     };
     this.drawShape = function(parent, shape) {
         let url = '';
@@ -38,6 +41,12 @@ export default function SimBPMNRenderer(eventBus) {
             url = Queue.dataURL;
         } else if(is(shape, "simBPMN:Server")){
             url = Server.dataURL;
+          } else if(is(shape, "simBPMN:ServerSeize")){
+            url = ServerSeize.dataURL;
+          } else if(is(shape, "simBPMN:ServerDelay")){
+            url = ServerDelay.dataURL;
+          } else if(is(shape, "simBPMN:ServerRelease")){
+            url = ServerRelease.dataURL;
         } else if(is(shape, "simBPMN:Output")){
             url = Output.dataURL;
         }

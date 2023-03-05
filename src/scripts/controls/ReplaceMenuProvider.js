@@ -52,10 +52,13 @@ ReplaceMenuProvider.$inject = [
 /**
  * Register replace menu provider in the popup menu
  */
-ReplaceMenuProvider.prototype.register = function() {
+ReplaceMenuProvider.prototype.register = function () {
     this._popupMenu.registerProvider('bpmn-replace', this);
 };
 
+function isCustom(element) {
+    return element && (/^regularBPMN:/.test(element.type) || /^simBPMN:/.test(element.type));
+}
 
 /**
  * Get all entries from replaceOptions for the given element and apply filters
@@ -65,8 +68,8 @@ ReplaceMenuProvider.prototype.register = function() {
  *
  * @return {Array<Object>} a list of menu entry items
  */
-ReplaceMenuProvider.prototype.getEntries = function(element) {
-
+ReplaceMenuProvider.prototype.getEntries = function (element) {
+    var translate = this._translate;
     var businessObject = element.businessObject;
 
     var rules = this._rules;
@@ -76,6 +79,8 @@ ReplaceMenuProvider.prototype.getEntries = function(element) {
     if (!rules.allowed('shape.replace', { element: element })) {
         return [];
     }
+
+    console.log("rmp");
 
     var differentType = isDifferentType(element);
 
@@ -98,7 +103,7 @@ ReplaceMenuProvider.prototype.getEntries = function(element) {
     // expanded/collapsed pools
     if (is(businessObject, 'bpmn:Participant')) {
 
-        entries = filter(replaceOptions.PARTICIPANT, function(entry) {
+        entries = filter(replaceOptions.PARTICIPANT, function (entry) {
             return isExpanded(element) !== entry.target.isExpanded;
         });
 
@@ -107,7 +112,7 @@ ReplaceMenuProvider.prototype.getEntries = function(element) {
 
     // start events inside event sub processes
     if (is(businessObject, 'bpmn:StartEvent') && isEventSubProcess(businessObject.$parent)) {
-        entries = filter(replaceOptions.EVENT_SUB_PROCESS_START_EVENT, function(entry) {
+        entries = filter(replaceOptions.EVENT_SUB_PROCESS_START_EVENT, function (entry) {
 
             var target = entry.target;
 
@@ -134,7 +139,7 @@ ReplaceMenuProvider.prototype.getEntries = function(element) {
     // end events
     if (is(businessObject, 'bpmn:EndEvent')) {
 
-        entries = filter(replaceOptions.END_EVENT, function(entry) {
+        entries = filter(replaceOptions.END_EVENT, function (entry) {
             var target = entry.target;
 
             // hide cancel end events outside transactions
@@ -151,7 +156,7 @@ ReplaceMenuProvider.prototype.getEntries = function(element) {
     // boundary events
     if (is(businessObject, 'bpmn:BoundaryEvent')) {
 
-        entries = filter(replaceOptions.BOUNDARY_EVENT, function(entry) {
+        entries = filter(replaceOptions.BOUNDARY_EVENT, function (entry) {
 
             var target = entry.target;
 
@@ -213,7 +218,7 @@ ReplaceMenuProvider.prototype.getEntries = function(element) {
     // collapsed ad hoc sub processes
     if (is(businessObject, 'bpmn:AdHocSubProcess') && !isExpanded(element)) {
 
-        entries = filter(replaceOptions.TASK, function(entry) {
+        entries = filter(replaceOptions.TASK, function (entry) {
 
             var target = entry.target;
 
@@ -227,6 +232,76 @@ ReplaceMenuProvider.prototype.getEntries = function(element) {
         return this._createEntries(element, entries);
     }
 
+    var replaceElement = this._bpmnReplace.replaceElement;
+
+    if (is(businessObject, "simBPMN:Server")) {
+        var menuEntry = {
+            label: translate('Split server'),
+            className: "bpmn-icon-parallel-mi-marker",
+            id: 'split-to-size-process-release',
+            action: () => {
+                var serverDelay = replaceElement(element, { type: 'simBPMN:ServerDelay' }, {
+                    autoResize: false,
+                    layoutConnection: false
+                });
+
+                let serverSeize = this._modeling._elementFactory.createShape({
+                    type: 'simBPMN:ServerSeize'
+                });
+                this._modeling.createShape(serverSeize, { x: serverDelay.x - 45, y: serverDelay.y + serverDelay.height / 2 }, serverDelay.parent);
+
+                let serverRelease = this._modeling._elementFactory.createShape({
+                    type: 'simBPMN:ServerRelease'
+                });
+                this._modeling.createShape(serverRelease, { x: serverDelay.x + serverDelay.width + 45, y: serverDelay.y + serverDelay.height / 2 }, serverDelay.parent);
+
+                var incoming = [...serverDelay.incoming];
+                var outgoing = [...serverDelay.outgoing];
+
+                incoming.forEach(x => this._modeling.connect(x.source, serverSeize, {type: x.type}));
+                outgoing.forEach(x => this._modeling.connect(serverRelease, x.target, {type: x.type}));
+
+                //incoming.forEach(x => x.target = serverSeize);
+                //outgoing.forEach(x => x.source = serverRelease);
+                this._modeling.removeElements(incoming);
+                this._modeling.removeElements(outgoing);
+                //incoming.forEach(x => this._modeling.removeElements)
+
+
+
+                this._modeling.connect(serverSeize, serverDelay);
+                this._modeling.connect(serverDelay, serverRelease);
+
+                // TODO: Create Logic for Splitting
+                console.log(123);
+                // TODO: set custom property that turns sequence flow into custom sequence flow
+                //this._modeling.updateProperties(element, {
+                //    name: "blue"
+                //});
+            }
+        };
+
+        return [menuEntry];
+
+        return [{
+            className: "bpmn-icon-parallel-mi-marker",
+            label: "Blue Sequence Flow",
+            id: 'split-to-size-process-release',
+            action: () => {
+                // TODO: Create Logic for Splitting
+                console.log(123);
+                // TODO: set custom property that turns sequence flow into custom sequence flow
+                //this._modeling.updateProperties(element, {
+                //    name: "blue"
+                //});
+            }
+        }]
+    }
+
+    if (isCustom(element)) {
+        return [];
+    }
+
     // sequence flows
     if (is(businessObject, 'bpmn:SequenceFlow')) {
         return this._createSequenceFlowEntries(element, replaceOptions.SEQUENCE_FLOW);
@@ -238,7 +313,7 @@ ReplaceMenuProvider.prototype.getEntries = function(element) {
 
         // collapsed SubProcess can not be replaced with itself
         if (is(businessObject, 'bpmn:SubProcess') && !isExpanded(element)) {
-            entries = filter(entries, function(entry) {
+            entries = filter(entries, function (entry) {
                 return entry.label !== 'Sub Process (collapsed)';
             });
         }
@@ -258,7 +333,7 @@ ReplaceMenuProvider.prototype.getEntries = function(element) {
  *
  * @return {Array<Object>} a list of menu entry items
  */
-ReplaceMenuProvider.prototype.getHeaderEntries = function(element) {
+ReplaceMenuProvider.prototype.getHeaderEntries = function (element) {
 
     var headerEntries = [];
 
@@ -293,12 +368,12 @@ ReplaceMenuProvider.prototype.getHeaderEntries = function(element) {
  *
  * @return {Array<Object>} a list of menu items
  */
-ReplaceMenuProvider.prototype._createEntries = function(element, replaceOptions) {
+ReplaceMenuProvider.prototype._createEntries = function (element, replaceOptions) {
     var menuEntries = [];
 
     var self = this;
 
-    forEach(replaceOptions, function(definition) {
+    forEach(replaceOptions, function (definition) {
         var entry = self._createMenuEntry(definition, element);
 
         menuEntries.push(entry);
@@ -314,7 +389,7 @@ ReplaceMenuProvider.prototype._createEntries = function(element, replaceOptions)
  * @param  {Object} replaceOptions
  * @return {Array<Object>} a list of menu items
  */
-ReplaceMenuProvider.prototype._createSequenceFlowEntries = function(element, replaceOptions) {
+ReplaceMenuProvider.prototype._createSequenceFlowEntries = function (element, replaceOptions) {
 
     var businessObject = getBusinessObject(element);
 
@@ -325,7 +400,7 @@ ReplaceMenuProvider.prototype._createSequenceFlowEntries = function(element, rep
 
     var self = this;
 
-    forEach(replaceOptions, function(entry) {
+    forEach(replaceOptions, function (entry) {
 
         switch (entry.actionName) {
             case 'replace-with-default-flow':
@@ -335,7 +410,7 @@ ReplaceMenuProvider.prototype._createSequenceFlowEntries = function(element, rep
                         is(businessObject.sourceRef, 'bpmn:ComplexGateway') ||
                         is(businessObject.sourceRef, 'bpmn:Activity'))) {
 
-                    menuEntries.push(self._createMenuEntry(entry, element, function() {
+                    menuEntries.push(self._createMenuEntry(entry, element, function () {
                         modeling.updateProperties(element.source, { default: businessObject });
                     }));
                 }
@@ -343,7 +418,7 @@ ReplaceMenuProvider.prototype._createSequenceFlowEntries = function(element, rep
             case 'replace-with-conditional-flow':
                 if (!businessObject.conditionExpression && is(businessObject.sourceRef, 'bpmn:Activity')) {
 
-                    menuEntries.push(self._createMenuEntry(entry, element, function() {
+                    menuEntries.push(self._createMenuEntry(entry, element, function () {
                         var conditionExpression = moddle.create('bpmn:FormalExpression', { body: '' });
 
                         modeling.updateProperties(element, { conditionExpression: conditionExpression });
@@ -354,19 +429,19 @@ ReplaceMenuProvider.prototype._createSequenceFlowEntries = function(element, rep
 
                 // default flows
                 if (is(businessObject.sourceRef, 'bpmn:Activity') && businessObject.conditionExpression) {
-                    return menuEntries.push(self._createMenuEntry(entry, element, function() {
+                    return menuEntries.push(self._createMenuEntry(entry, element, function () {
                         modeling.updateProperties(element, { conditionExpression: undefined });
                     }));
                 }
 
                 // conditional flows
                 if ((is(businessObject.sourceRef, 'bpmn:ExclusiveGateway') ||
-                        is(businessObject.sourceRef, 'bpmn:InclusiveGateway') ||
-                        is(businessObject.sourceRef, 'bpmn:ComplexGateway') ||
-                        is(businessObject.sourceRef, 'bpmn:Activity')) &&
+                    is(businessObject.sourceRef, 'bpmn:InclusiveGateway') ||
+                    is(businessObject.sourceRef, 'bpmn:ComplexGateway') ||
+                    is(businessObject.sourceRef, 'bpmn:Activity')) &&
                     businessObject.sourceRef.default === businessObject) {
 
-                    return menuEntries.push(self._createMenuEntry(entry, element, function() {
+                    return menuEntries.push(self._createMenuEntry(entry, element, function () {
                         modeling.updateProperties(element.source, { default: undefined });
                     }));
                 }
@@ -387,11 +462,11 @@ ReplaceMenuProvider.prototype._createSequenceFlowEntries = function(element, rep
  *
  * @return {Object} menu entry item
  */
-ReplaceMenuProvider.prototype._createMenuEntry = function(definition, element, action) {
+ReplaceMenuProvider.prototype._createMenuEntry = function (definition, element, action) {
     var translate = this._translate;
     var replaceElement = this._bpmnReplace.replaceElement;
 
-    var replaceAction = function() {
+    var replaceAction = function () {
         return replaceElement(element, definition.target);
     };
 
@@ -400,7 +475,7 @@ ReplaceMenuProvider.prototype._createMenuEntry = function(definition, element, a
         label = label(element);
     }
 
-    action = action || replaceAction;
+    action = action || definition.action || replaceAction;
 
     var menuEntry = {
         label: translate(label),
@@ -419,7 +494,7 @@ ReplaceMenuProvider.prototype._createMenuEntry = function(definition, element, a
  *
  * @return {Array<Object>} a list of menu items
  */
-ReplaceMenuProvider.prototype._getLoopEntries = function(element) {
+ReplaceMenuProvider.prototype._getLoopEntries = function (element) {
 
     var self = this;
     var translate = this._translate;
@@ -497,7 +572,7 @@ ReplaceMenuProvider.prototype._getLoopEntries = function(element) {
  *
  * @return {Array<Object>} a list of menu items
  */
-ReplaceMenuProvider.prototype._getDataObjectIsCollection = function(element) {
+ReplaceMenuProvider.prototype._getDataObjectIsCollection = function (element) {
 
     var self = this;
     var translate = this._translate;
@@ -531,7 +606,7 @@ ReplaceMenuProvider.prototype._getDataObjectIsCollection = function(element) {
  *
  * @return {Array<Object>} a list of menu items
  */
-ReplaceMenuProvider.prototype._getParticipantMultiplicity = function(element) {
+ReplaceMenuProvider.prototype._getParticipantMultiplicity = function (element) {
 
     var self = this;
     var bpmnFactory = this._bpmnFactory;
@@ -572,7 +647,7 @@ ReplaceMenuProvider.prototype._getParticipantMultiplicity = function(element) {
  *
  * @return {Object} a menu item
  */
-ReplaceMenuProvider.prototype._getAdHocEntry = function(element) {
+ReplaceMenuProvider.prototype._getAdHocEntry = function (element) {
     var translate = this._translate;
     var businessObject = getBusinessObject(element);
 
@@ -585,7 +660,7 @@ ReplaceMenuProvider.prototype._getAdHocEntry = function(element) {
         className: 'bpmn-icon-ad-hoc-marker',
         title: translate('Ad-hoc'),
         active: isAdHoc,
-        action: function(event, entry) {
+        action: function (event, entry) {
             if (isAdHoc) {
                 return replaceElement(element, { type: 'bpmn:SubProcess' }, {
                     autoResize: false,

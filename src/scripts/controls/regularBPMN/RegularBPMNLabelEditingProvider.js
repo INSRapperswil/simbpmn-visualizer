@@ -15,6 +15,9 @@ import {
   isLabel
 } from '../../utils/LabelUtil';
 
+import {
+  isCustom
+} from '../../utils/ElementUtil';
 
 export default function RegularBPMNLabelEditingProvider(
   eventBus, canvas, directEditing,
@@ -89,6 +92,9 @@ export default function RegularBPMNLabelEditingProvider(
 
   function activateDirectEdit(element, force) {
     //CUSTOM
+    if (is(element, 'regularBPMN:Resource') && element.businessObject.isFromParent) {
+      return;
+    }
     if (force ||
       isAny(element, ['bpmn:Task', 'bpmn:TextAnnotation', 'regularBPMN:Resource']) ||
       isCollapsedSubProcess(element)) {
@@ -313,7 +319,12 @@ RegularBPMNLabelEditingProvider.prototype.getEditingBBox = function (element) {
       height: 0
     });
 
-    var height = externalFontSize + paddingTop + paddingBottom;
+    var fontSize = externalFontSize;
+    if(isCustom(target)) {
+      fontSize = defaultFontSize;
+    }
+
+    var height = fontSize + paddingTop + paddingBottom;
 
     assign(bounds, {
       width: width,
@@ -323,7 +334,7 @@ RegularBPMNLabelEditingProvider.prototype.getEditingBBox = function (element) {
     });
 
     assign(style, {
-      fontSize: externalFontSize + 'px',
+      fontSize: fontSize + 'px',
       lineHeight: externalLineHeight,
       paddingTop: paddingTop + 'px',
       paddingBottom: paddingBottom + 'px'

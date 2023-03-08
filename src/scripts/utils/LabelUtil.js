@@ -34,6 +34,9 @@ export function isLabelExternal(semantic) {
          is(semantic, 'simBPMN:Resource') ||
          is(semantic, 'simBPMN:Queue') ||
          is(semantic, 'simBPMN:Server') ||
+         is(semantic, 'simBPMN:ServerSeize') ||
+         is(semantic, 'simBPMN:ServerDelay') ||
+         is(semantic, 'simBPMN:ServerRelease') ||
          is(semantic, 'simBPMN:Output');
 }
 

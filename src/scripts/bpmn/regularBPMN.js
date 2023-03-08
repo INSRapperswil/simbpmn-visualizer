@@ -266,6 +266,8 @@ eventBus.on('selection.changed', function (context) {
 
   if (newSelection.length > 0) {
     selectShape(newSelection[0]);
+  } else {
+    showHideLogic(true);
   }
 });
 
@@ -285,29 +287,55 @@ function selectShape(shape) {
     // when new task is created, it will have default-resource which has to be added to logic
     // do this here, because logic will only be created here
     adjustResources(shape);
+  } else if (is(shape, "bpmn:SubProcess")) {
+    adjustResources(shape);
   }
 }
 
+let activeItemIndex;
 function showHideLogic(hide) {
   if (hide) {
+    var tabSwitchItems = document.getElementById("tabswitchMenu").children;
+    for (var i = 0; i < tabSwitchItems.length; ++i) {
+      if (tabSwitchItems[i].classList.contains("active")) {
+        activeItemIndex = i;
+        break;
+      }
+    }
+
     $(".tabSwitchMenu li:first").trigger('click');
     document.getElementById("tabswitchMenu").children[1].style.display = "none";
     document.getElementById("tabswitchMenu").children[2].style.display = "none";
   } else {
     document.getElementById("tabswitchMenu").children[1].style.display = "";
     document.getElementById("tabswitchMenu").children[2].style.display = "";
+
+    if (activeItemIndex > 0) {
+      var item = document.getElementById("tabswitchMenu").children[activeItemIndex];
+      item.click();
+    }
   }
 
 }
 eventBus.on('elements.changed', function (context) {
   window.markAsDirty();
+
+  context.elements.forEach(element => {
+    if (is(element, "regularBPMN:Resource")) {
+      element.outgoing.forEach(connection => {
+        if (is(connection.target, 'bpmn:SubProcess')) {
+          adjustResourcesInSubprocess(connection.target);
+        }
+      });
+    }
+  });
 });
 
-eventBus.on('commandStack.shape.create.executed', function (event) {
-  const context = event.context;
-  const shape = context.shape;
-  console.log("shape added: ", shape);
-});
+// eventBus.on('commandStack.shape.create.executed', function (event) {
+//   const context = event.context;
+//   const shape = context.shape;
+//   console.log("shape added: ", shape);
+// });
 
 eventBus.on("commandStack.connection.create.postExecuted", function (event) {
   console.log("connection created");
@@ -316,11 +344,7 @@ eventBus.on("commandStack.connection.create.postExecuted", function (event) {
   const source = context.source;
   const target = context.target;
 
-  //console.log("Source:", source);
-  //console.log("Target:", target);
-
   if (is(source, "regularBPMN:Resource")) {
-    //console.log("Association to resource");
     adjustResources(target);
   }
 });
@@ -330,21 +354,16 @@ eventBus.on("commandStack.connection.delete.preExecute", function (event) {
 
   const { connection } = context;
 
-  //console.log("Context:", context);
-  //console.log("Connection:", connection)
-  //console.log("Parent:", connection.parent);
-  //console.log("Source:", connection.source);
-  //console.log("Target:", connection.target);
-
   if (is(connection.source, "regularBPMN:Resource")) {
     adjustResources(connection.target, connection.source);
   }
 });
 
 function adjustResources(shape, disconnectingResource) {
-  adjustResourcesInLogic(shape, disconnectingResource);
   if (is(shape, 'bpmn:SubProcess')) {
     adjustResourcesInSubprocess(shape, disconnectingResource);
+  } else {
+    adjustResourcesInLogic(shape, disconnectingResource);
   }
 }
 
@@ -423,6 +442,12 @@ function adjustResourcesInSubprocess(shape, disconnectingResource) {
         y += shape.y;
       }
       modeling.createShape(resource, { x: x, y: y }, root);
+    } else {
+      if (existingResource.businessObject["name"] != name) {
+        modeling.updateProperties(existingResource, {
+          name: name
+        });
+      }
     }
     cnt++;
   });

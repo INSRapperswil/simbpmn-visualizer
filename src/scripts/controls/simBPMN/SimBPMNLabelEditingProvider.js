@@ -15,6 +15,9 @@ import {
   isLabel
 } from '../../utils/LabelUtil';
 
+import {
+  isCustom
+} from '../../utils/ElementUtil';
 
 export default function SimBPMNLabelEditingProvider(
   eventBus, canvas, directEditing,
@@ -316,7 +319,11 @@ SimBPMNLabelEditingProvider.prototype.getEditingBBox = function (element) {
       height: 0
     });
 
-    var height = externalFontSize + paddingTop + paddingBottom;
+    var fontSize = externalFontSize;
+    if(isCustom(target)) {
+      fontSize = defaultFontSize;
+    }
+    var height = fontSize + paddingTop + paddingBottom;
 
     assign(bounds, {
       width: width,
@@ -326,7 +333,7 @@ SimBPMNLabelEditingProvider.prototype.getEditingBBox = function (element) {
     });
 
     assign(style, {
-      fontSize: externalFontSize + 'px',
+      fontSize: fontSize + 'px',
       lineHeight: externalLineHeight,
       paddingTop: paddingTop + 'px',
       paddingBottom: paddingBottom + 'px'
@@ -361,7 +368,6 @@ SimBPMNLabelEditingProvider.prototype.update = function (
   element, newLabel,
   activeContextText, bounds) {
 
-  console.log("ddd");
   var newBounds,
     bbox;
 

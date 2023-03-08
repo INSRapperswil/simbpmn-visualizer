@@ -18,9 +18,9 @@ import {
   getParents,
 } from '../../utils/ModelUtil';
 
-function isCustom(element) {
-  return element && /^simBPMN:/.test(element.type);
-}
+import {
+  isCustom
+} from '../../utils/ElementUtil';
 
 function isParent(possibleParent, element) {
   var allParents = getParents(element);
@@ -56,7 +56,7 @@ SimBPMNRules.prototype.init = function () {
 
 
     // allow creation on processes
-    return is(target, 'bpmn:Process') || is(target, 'bpmn:Participant') || is(target, 'bpmn:Collaboration');
+    return is(target, 'bpmn:Process') || is(target, 'bpmn:Participant') || is(target, 'bpmn:Collaboration') || is(target, 'bpmn:SequenceFlow');
   }
 
   /**

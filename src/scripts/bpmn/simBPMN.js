@@ -112,8 +112,35 @@ eventBus.on("commandStack.connection.delete.preExecute", function (event) {
   }
 });
 
+eventBus.on('selection.changed', function (context) {
+  var oldSelection = context.oldSelection,
+    newSelection = context.newSelection;
 
+  if (newSelection.length > 0) {
+    selectShape(newSelection[0]);
+  } 
+});
 
+function selectShape(shape) {
+  console.log(shape.id + " was clicked");
+
+  if (is(shape, "bpmn:SubProcess")) {
+    adjustResources(shape);
+  }
+}
+
+// eventBus.on('elements.changed', function (context) {
+
+//   context.elements.forEach(element => {
+//     if (is(element, "regularBPMN:Resource")) {
+//       element.outgoing.forEach(connection => {
+//         if (is(connection.target, 'bpmn:SubProcess')) {
+//           adjustResourcesInSubprocess(connection.target);
+//         }
+//       });
+//     }
+//   });
+// });
 
 function adjustResources(shape, disconnectingResource) {
   if (is(shape, 'bpmn:SubProcess')) {
@@ -178,6 +205,12 @@ function adjustResourcesInSubprocess(shape, disconnectingResource) {
         y += shape.y;
       }
       modeling.createShape(resource, { x: x, y: y }, root);
+    } else {
+      if (existingResource.businessObject["name"] != name) {
+        modeling.updateProperties(existingResource, {
+          name: name
+        });
+      }
     }
     cnt++;
   });
@@ -219,7 +252,6 @@ window.electronAPI.adjustResourcesInLogic((event, resources) => {
   const ids = [];
   let cnt = 0;
   resources.forEach(element => {
-    var shape;
     var id;
     var name;
     if (typeof element[0] === 'string') {
@@ -229,9 +261,9 @@ window.electronAPI.adjustResourcesInLogic((event, resources) => {
     }
     name = element[1];
     ids.push(id);
-    shape = elementRegistry.get(id);
+    var existingResource = elementRegistry.get(id);
 
-    if (!shape) {
+    if (!existingResource) {
       let resource = elementFactory.createShape({
         type: 'simBPMN:Resource'
       });
@@ -239,16 +271,24 @@ window.electronAPI.adjustResourcesInLogic((event, resources) => {
       resource.businessObject["id"] = id;
       resource.businessObject["name"] = name;
       modeling.createShape(resource, { x: 300 + (cnt*50), y: 100 }, root);    
+    } else {
+      if (existingResource.businessObject["name"] != name) {
+        modeling.updateProperties(existingResource, {
+          name: name
+        });
+      }
     }
     cnt++;
   });
 
   elementRegistry.getAll().forEach(shape => {
-    if(is(shape, "simBPMN:Resource")) {
+    if(is(shape, "simBPMN:Resource") && !is(shape.parent, 'bpmn:SubProcess')) {
       let id = shape.businessObject["id"];
       if(!ids.some(x => x === id)) {
         modeling.removeShape(shape);
       }
+    } else if(is(shape, "bpmn:SubProcess")) {
+      adjustResourcesInSubprocess(shape)
     }
 
   })

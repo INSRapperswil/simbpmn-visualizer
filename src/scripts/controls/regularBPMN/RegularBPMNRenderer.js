@@ -100,7 +100,7 @@ export default class RegularBPMNRenderer extends BaseRenderer {
       var lines = bo.name.trim().split('\n');
       var textArea = svgCreate('text');
       var text = '';
-      var fontsize = 11;
+      var fontsize = 12;
       for (var i = 0; i < lines.length; ++i) {
         text += '<tspan x="' + width / 2 + '" y="+' + (height + 16) + '">' + lines[i] + '</tspan>';
       }

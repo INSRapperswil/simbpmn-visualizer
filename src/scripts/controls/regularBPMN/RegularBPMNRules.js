@@ -18,9 +18,9 @@ import {
   getParents,
 } from '../../utils/ModelUtil';
 
-function isCustom(element) {
-  return element && /^regularBPMN:/.test(element.type);
-}
+import {
+  isCustom
+} from '../../utils/ElementUtil';
 
 function isParent(possibleParent, element) {
   var allParents = getParents(element);

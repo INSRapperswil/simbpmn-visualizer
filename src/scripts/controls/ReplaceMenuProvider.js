@@ -17,6 +17,10 @@ import {
     filter
 } from 'min-dash';
 
+import {
+    isCustom
+  } from '../utils/ElementUtil';
+
 import * as replaceOptions from './replace/ReplaceOptions';
 
 
@@ -56,9 +60,6 @@ ReplaceMenuProvider.prototype.register = function () {
     this._popupMenu.registerProvider('bpmn-replace', this);
 };
 
-function isCustom(element) {
-    return element && (/^regularBPMN:/.test(element.type) || /^simBPMN:/.test(element.type));
-}
 
 /**
  * Get all entries from replaceOptions for the given element and apply filters

@@ -60,3 +60,7 @@ export function findRootElementById(businessObject, type, id) {
 
   return elements.find(element => element.id === id);
 }
+
+export function isCustom(element) {
+  return element && (/^regularBPMN:/.test(element.type) || /^simBPMN:/.test(element.type));
+}

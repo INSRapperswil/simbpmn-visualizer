@@ -37,7 +37,9 @@ export class logic {
         const elementRegistry = bpmnModeler.get("elementRegistry");
 
         let element = elementRegistry.get(businessObject.id);
-        let newBody = moddle.create("simBPMN:Logic", { content: xml });
-        modeling.updateProperties(element, newBody);
+        if(element) {
+            let newBody = moddle.create("simBPMN:Logic", { content: xml });
+            modeling.updateProperties(element, newBody);
+        }
     }
 }

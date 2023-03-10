@@ -150,7 +150,7 @@ function adjustResources(shape, disconnectingResource) {
 }
 
 function adjustResourcesInSubprocess(shape, disconnectingResource) {
-  console.log("adjust resources in subprocess for", shape);
+  console.log("logic: adjust resources in subprocess for", shape);
 
   const incoming = shape.incoming || [];
   const resources = incoming.reduce((resources, connection) => {
@@ -205,9 +205,11 @@ function adjustResourcesInSubprocess(shape, disconnectingResource) {
         x += shape.x;
         y += shape.y;
       }
+      console.log("create new resource")
       modeling.createShape(resource, { x: x, y: y }, root);
     } else {
       if (existingResource.businessObject["name"] != name) {
+        console.log("update name for resource ", shape, "(" + name + ")")
         modeling.updateProperties(existingResource, {
           name: name
         });
@@ -222,6 +224,7 @@ function adjustResourcesInSubprocess(shape, disconnectingResource) {
     if (is(shape, "simBPMN:Resource")) {
       let id = shape.businessObject["id"];
       if (shape.businessObject.isFromParent && shape.parent == root && !ids.some(x => x === id)) {
+        console.log("remove resource ", shape)
         modeling.removeShape(shape);
       }
     }

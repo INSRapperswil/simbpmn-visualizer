@@ -457,7 +457,7 @@ function adjustResourcesInSubprocess(shape, disconnectingResource) {
   elementRegistry.getAll().forEach(shape => {
     if (is(shape, "regularBPMN:Resource")) {
       let id = shape.businessObject["id"];
-      if (shape.businessObject.isFromParent && !ids.some(x => x === id)) {
+      if (shape.businessObject.isFromParent && shape.parent == root && !ids.some(x => x === id)) {
         modeling.removeShape(shape);
       }
     }

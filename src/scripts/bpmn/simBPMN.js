@@ -8,7 +8,7 @@ import SimBPMNRulesModules from '../controls/simBPMN';
 import ExtensionPropertiesProvider from '../provider';
 import { BpmnPropertiesPanelModule } from 'bpmn-js-properties-panel';
 import simBpmnModdleDescriptor from "../descriptors/simBPMN.json";
-import SimBPMNLabelEditingProvider  from '../controls/simBPMN';
+import SimBPMNLabelEditingProvider from '../controls/simBPMN';
 //import CustomRules from '../controls/custom-rules/CustomRules';
 
 
@@ -17,11 +17,12 @@ import { debounce } from "min-dash";
 import diagramXML from "../../resources/newDiagram.bpmn";
 
 import bpmnTranslations from "../../translations/bpmn/translations";
-import { is,
+import {
+  is,
   getBusinessObject
- } from "bpmn-js/lib/util/ModelUtil";
- import { isExpanded } from "../utils/DiUtil";
- 
+} from "bpmn-js/lib/util/ModelUtil";
+import { isExpanded } from "../utils/DiUtil";
+
 var canvas = $("#js-simbpmncanvas");
 
 var customTranslateModule = {
@@ -118,7 +119,7 @@ eventBus.on('selection.changed', function (context) {
 
   if (newSelection.length > 0) {
     selectShape(newSelection[0]);
-  } 
+  }
 });
 
 function selectShape(shape) {
@@ -220,7 +221,7 @@ function adjustResourcesInSubprocess(shape, disconnectingResource) {
   elementRegistry.getAll().forEach(shape => {
     if (is(shape, "simBPMN:Resource")) {
       let id = shape.businessObject["id"];
-      if (shape.businessObject.isFromParent && !ids.some(x => x === id)) {
+      if (shape.businessObject.isFromParent && shape.parent == root && !ids.some(x => x === id)) {
         modeling.removeShape(shape);
       }
     }
@@ -242,7 +243,7 @@ function adjustResourcesInSubprocess(shape, disconnectingResource) {
 window.electronAPI.adjustResourcesInLogic((event, resources) => {
   console.log("adjust resources in logic: ", resources);
 
-  
+
   let elementFactory = bpmnModeler.get('elementFactory');
   let elementRegistry = bpmnModeler.get('elementRegistry');
   let moddle = bpmnModeler.get('moddle');
@@ -270,7 +271,7 @@ window.electronAPI.adjustResourcesInLogic((event, resources) => {
 
       resource.businessObject["id"] = id;
       resource.businessObject["name"] = name;
-      modeling.createShape(resource, { x: 300 + (cnt*50), y: 100 }, root);    
+      modeling.createShape(resource, { x: 300 + (cnt * 50), y: 100 }, root);
     } else {
       if (existingResource.businessObject["name"] != name) {
         modeling.updateProperties(existingResource, {
@@ -282,12 +283,12 @@ window.electronAPI.adjustResourcesInLogic((event, resources) => {
   });
 
   elementRegistry.getAll().forEach(shape => {
-    if(is(shape, "simBPMN:Resource") && !is(shape.parent, 'bpmn:SubProcess')) {
+    if (is(shape, "simBPMN:Resource") && !is(shape.parent, 'bpmn:SubProcess')) {
       let id = shape.businessObject["id"];
-      if(!ids.some(x => x === id)) {
+      if (!ids.some(x => x === id)) {
         modeling.removeShape(shape);
       }
-    } else if(is(shape, "bpmn:SubProcess")) {
+    } else if (is(shape, "bpmn:SubProcess")) {
       adjustResourcesInSubprocess(shape)
     }
 

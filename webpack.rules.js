@@ -46,5 +46,9 @@ module.exports = [
     use: {
       loader: 'raw-loader'
     }
+  },
+  {
+    test: /\.(svg)$/i,			
+    type: 'asset/resource'	
   }
 ];

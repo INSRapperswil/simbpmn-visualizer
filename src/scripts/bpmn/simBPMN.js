@@ -42,6 +42,45 @@ var bpmnModeler = new BpmnModeler({
     SimBPMNRulesModules,
     SimBPMNLabelEditingProvider
   ],
+  colorPicker: {
+    colors: [ {
+      label: 'Default',
+      fill: undefined,
+      stroke: undefined
+    }, {
+      label: 'Blue',
+      fill: '#BBDEFB',
+      stroke: '#1E88E5'
+    }, {
+      label: 'Orange',
+      fill: '#FFE0B2',
+      stroke: '#FB8C00'
+    }, {
+      label: 'Green',
+      fill: '#C8E6C9',
+      stroke: '#43A047'
+    }, {
+      label: 'Red',
+      fill: '#FFCDD2',
+      stroke: '#FB8C00'
+    }, {
+      label: 'Purple',
+      fill: '#E1BEE7',
+      stroke: '#8E24AA'
+    }, {
+      label: 'Brown',
+      fill: '#D2691E',
+      stroke: '#654321'
+    }, {
+      label: 'Violet',
+      fill: '#6A5ACD',
+      stroke: '#4B0082'
+    }, {
+      label: 'Olivegreen',
+      fill: '#BDB76B',
+      stroke: '#808000'
+    } ]
+  },
   moddleExtensions: {
     simbpmn: simBpmnModdleDescriptor,
   },

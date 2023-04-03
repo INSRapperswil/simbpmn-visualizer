@@ -10,6 +10,7 @@ html {
   max-height: 100%;
   padding: 0;
   margin: 0;
+  --js-canvas-height: 0px;
 }
 
 #js-properties-panel {
@@ -128,4 +129,15 @@ a:link {
 #workspace_location{
   width: auto;
   max-width: 90%;
+}
+
+/* fix location of contextmenu-popup */
+
+.simbpmncanvas .djs-popup {
+  margin-left: 200px;
+  margin-top: var(--js-canvas-height)
+}
+
+.canvas .djs-popup {
+  margin-left: 200px;
 }

@@ -20,7 +20,6 @@ import bpmnTranslations from "../../translations/bpmn/translations";
 import { toggleSettings } from "../tabs/settings";
 import { isExpanded } from "../utils/DiUtil";
 
-
 const container = $("#js-drop-zone");
 const canvas = $("#js-canvas");
 const bpmnContent = document.querySelector("#bpmnContent");
@@ -51,6 +50,45 @@ const bpmnModeler = new BpmnModeler({
     RegularBPMNRulesModules,
     RegularBPMNLabelEditingProvider
   ],
+  colorPicker: {
+    colors: [ {
+      label: 'Default',
+      fill: undefined,
+      stroke: undefined
+    }, {
+      label: 'Blue',
+      fill: '#BBDEFB',
+      stroke: '#1E88E5'
+    }, {
+      label: 'Orange',
+      fill: '#FFE0B2',
+      stroke: '#FB8C00'
+    }, {
+      label: 'Green',
+      fill: '#C8E6C9',
+      stroke: '#43A047'
+    }, {
+      label: 'Red',
+      fill: '#FFCDD2',
+      stroke: '#FB8C00'
+    }, {
+      label: 'Purple',
+      fill: '#E1BEE7',
+      stroke: '#8E24AA'
+    }, {
+      label: 'Brown',
+      fill: '#D2691E',
+      stroke: '#654321'
+    }, {
+      label: 'Violet',
+      fill: '#6A5ACD',
+      stroke: '#4B0082'
+    }, {
+      label: 'Olivegreen',
+      fill: '#BDB76B',
+      stroke: '#808000'
+    } ]
+  },
   moddleExtensions: {
     simbpmn: simBpmnModdleDescriptor,
     regularbpmn: regularBpmnModdleDescriptor
@@ -392,7 +430,8 @@ function adjustResourcesInSubprocess(shape, disconnectingResource) {
   const resources = incoming.reduce((resources, connection) => {
     if (is(connection.source, "regularBPMN:Resource") && (!disconnectingResource || disconnectingResource != connection.source)) {
       var bo = getBusinessObject(connection.source);
-      resources.push([connection.source, bo.name]);
+      //resources.push([connection.source, bo.name]);
+      resources.push(connection.source);
     }
     return resources;
   }, []);
@@ -416,13 +455,15 @@ function adjustResourcesInSubprocess(shape, disconnectingResource) {
     var existingResource;
     var id;
     var name;
-    if (typeof element[0] === 'string') {
-      id = "Resource_" + element[0];
-    } else {
-      id = element[0].id;
-    }
+    //if (typeof element[0] === 'string') {
+    //  id = "Resource_" + element[0];
+    //} else {
+    id = element.id;
+    //}
     id = `${shape.id}_${id}`;
-    name = element[1];
+    var bo = getBusinessObject(element);
+    //name = element[1];
+    name = bo.name;
     ids.push(id);
     existingResource = elementRegistry.get(id);
 
@@ -450,6 +491,13 @@ function adjustResourcesInSubprocess(shape, disconnectingResource) {
           name: name
         });
       }
+
+      var colorFill = element.di.get('color:background-color');
+      var colorStroke = element.di.get('color:border-color')
+      if (colorFill && colorStroke && (colorFill != existingResource.di.get('color:background-color') || colorStroke != existingResource.di.get('color:border-color'))) {
+        modeling.setColor(existingResource, { fill: colorFill, stroke: colorStroke });
+      }
+
     }
     cnt++;
   });

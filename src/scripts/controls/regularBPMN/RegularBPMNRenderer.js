@@ -11,11 +11,15 @@ import {
   attr as svgAttr,
   create as svgCreate,
   remove as svgRemove,
+  classes as svgClasses,
   innerSVG
 } from 'tiny-svg';
 import {
   Priority
 } from '../../utils/ModelUtil';
+
+import svgResource from "./source/resource.svg";
+import svgEntity from "./source/entity.svg";
 
 const TASK_BORDER_RADIUS = 2;
 
@@ -41,7 +45,7 @@ export default class RegularBPMNRenderer extends BaseRenderer {
         y: 0,
         width: shape.width / 4,
         height: shape.height / 4,
-        href: Resource.dataURL
+        href: svgResource
       });
 
       //const rect = drawRect(parent, 100, 80, TASK_BORDER_RADIUS, '#52B415');
@@ -54,49 +58,23 @@ export default class RegularBPMNRenderer extends BaseRenderer {
 
       return task;
     }
-    let url = '';
-    if (is(shape, "regularBPMN:Resource")) {
-      url = Resource.dataURL;
-    } else if (is(shape, "regularBPMN:Entity")) {
-      url = Entity.dataURL;
+
+    console.log('render');
+
+    var svg;
+    var color = shape.di.get('color:background-color')
+    if (color) {
+      svg = loadColorized(shape);
+    } else {
+      svg = loadFromUrl(shape);
     }
-    /*
-            var svg = svgCreate('circle');
-            svgAttr(svg, {
-              //cx: cx,
-              //cy: cy,
-              strokeWidth: 1,
-            fill: 'red',
-            stroke: 'red',
-              r: Math.round((shape.width + shape.height) / 4)
-            });
-    */
-
-
-
-    var width = shape.width,
-      height = shape.height;
-
-    var svg = svgCreate('image', {
-      x: 0,
-      y: 0,
-      width: width,
-      height: height,
-      href: url
-    });
-
 
     svgAppend(parent, svg);
-    var bo, color;
-    bo = getBusinessObject(shape);
-    //color = bo.get('tp:color');
-    //color = bo.get('color:background-color');
-
-    //if (color) {
-    //  svgAttr(svg, 'fill', color);
-    //}
+    var bo = getBusinessObject(shape);
 
     if (bo.name) {
+      var width = shape.width;
+      var height = shape.height;
       var lines = bo.name.trim().split('\n');
       var textArea = svgCreate('text');
       var text = '';
@@ -117,6 +95,63 @@ export default class RegularBPMNRenderer extends BaseRenderer {
     }
     return svg;
   };
+}
+
+function loadColorized(shape) {
+  var svgCode = '';
+  var viewBox = '';
+  if (is(shape, "regularBPMN:Resource")) {
+    svgCode = '<defs/><g><ellipse cx="108" cy="65" rx="108" ry="65" fill="@@colorFill" stroke="@@colorStroke" stroke-width="6px" pointer-events="all"/><ellipse cx="108" cy="65" rx="40" ry="40" fill="@@colorStroke" stroke="@@colorStroke" pointer-events="all"/></g>'
+    viewBox = "-3 -0.5 222 132";
+  } else if (is(shape, "regularBPMN:Entity")) {
+    svgCode = '<defs/><g><path d="M 0 0 L 46 25 L 0 50 Z" fill="@@colorFill" stroke="@@colorStroke" stroke-width="2px" stroke-miterlimit="10" pointer-events="all"/></g>'
+    viewBox = "-0.5 -0.5 47 51";
+  }
+
+  var colorFill = "transparent";
+  var colorStroke = "rgb(0, 0, 0)";
+
+  colorFill = shape.di.get('color:background-color');
+  colorStroke = shape.di.get('color:border-color')
+  svgCode = svgCode.replaceAll("@@colorFill", colorFill);
+  svgCode = svgCode.replaceAll("@@colorStroke", colorStroke);
+
+  var width = shape.width;
+  var height = shape.height;
+
+  var svgInline = svgCreate('svg', {
+    x: 0,
+    y: 0,
+    width: width,
+    height: height,
+    viewBox: viewBox
+  })
+
+  innerSVG(svgInline, svgCode);
+
+  return svgInline;
+}
+
+function loadFromUrl(shape) {
+  var url = '';
+  if (is(shape, "regularBPMN:Resource")) {
+    url = svgResource;
+  } else if (is(shape, "regularBPMN:Entity")) {
+    url = svgEntity;
+  }
+
+  var width = shape.width,
+    height = shape.height;
+
+  var svg = svgCreate('image', {
+    x: 0,
+    y: 0,
+    width: width,
+    height: height,
+    href: url
+  });
+
+  return svg;
 }
 
 function drawCircle(parentGfx, width, height, offset, attrs) {

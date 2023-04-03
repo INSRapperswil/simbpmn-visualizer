@@ -1,12 +1,12 @@
 .regularBPMN-entity-icon {
-    background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHZlcnNpb249IjEuMSIgd2lkdGg9IjQ3cHgiIGhlaWdodD0iNTFweCIgdmlld0JveD0iLTAuNSAtMC41IDQ3IDUxIj48ZGVmcy8+PGc+PHBhdGggZD0iTSAwIDAgTCA0NiAyNSBMIDAgNTAgWiIgZmlsbD0iIzAwOGEwMCIgc3Ryb2tlPSIjMDA1NzAwIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHBvaW50ZXItZXZlbnRzPSJhbGwiLz48L2c+PC9zdmc+");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' width='47px' height='51px' viewBox='-0.5 -0.5 47 51'%3E%3Cdefs/%3E%3Cg%3E%3Cpath d='M 0 0 L 46 25 L 0 50 Z' fill='transparent' stroke='rgb(0,0,0)' stroke-width='2px' stroke-miterlimit='10' pointer-events='all'/%3E%3C/g%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center center;
 }
 
 .regularBPMN-resource-icon {
-    background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHdpZHRoPSIyMTdweCIgaGVpZ2h0PSIxMzFweCIgdmlld0JveD0iLTAuNSAtMC41IDIxNyAxMzEiPjxkZWZzLz48Zz48ZWxsaXBzZSBjeD0iMTA4IiBjeT0iNjUiIHJ4PSIxMDgiIHJ5PSI2NSIgZmlsbD0icmdiKDI1NSwgMjU1LCAyNTUpIiBzdHJva2U9InJnYigwLCAwLCAwKSIgcG9pbnRlci1ldmVudHM9ImFsbCIvPjxlbGxpcHNlIGN4PSIxMDgiIGN5PSI2NSIgcng9IjQwIiByeT0iNDAiIGZpbGw9IiNhMDUyMmQiIHN0cm9rZT0iIzZkMWYwMCIgcG9pbnRlci1ldmVudHM9ImFsbCIvPjwvZz48L3N2Zz4=");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' width='217px' height='131px' viewBox='-3 -3 222 137'%3E%3Cdefs/%3E%3Cg%3E%3Cellipse cx='108' cy='65' rx='108' ry='65' fill='transparent' stroke='rgb(0, 0, 0)' stroke-width='6px' pointer-events='all'/%3E%3Cellipse cx='108' cy='65' rx='40' ry='40' fill='rgb(0,0,0)' stroke='rgb(0,0,0)' pointer-events='all'/%3E%3C/g%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center center;

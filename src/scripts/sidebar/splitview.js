@@ -81,4 +81,13 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.resizer').forEach(function (ele) {
         resizable(ele);
     });
+
+    var ro = new ResizeObserver(entries => {
+        var height = entries[0].contentRect.height;
+        console.log(height);
+        document.body.style.cssText = "--js-canvas-height: " + height + "px;" 
+    });
+
+    // Observe one or multiple elements
+    ro.observe(document.getElementById('js-canvas'));
 });

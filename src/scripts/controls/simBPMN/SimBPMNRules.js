@@ -98,19 +98,22 @@ SimBPMNRules.prototype.init = function () {
     var target = context.target,
       shapes = context.shapes;
 
-    var type;
+    //var type;
 
-    // do not allow mixed movements of custom / BPMN shapes
+    // disabled: do not allow mixed movements of custom / BPMN shapes
     // if any shape cannot be moved, the group cannot be moved, too
     var allowed = reduce(shapes, function (result, s) {
-      if (type === undefined) {
-        type = isCustom(s);
-      }
+      //if (type === undefined) {
+      //  type = isCustom(s);
+      //}
 
-      if (type !== isCustom(s) || result === false) {
+      //if (type !== isCustom(s) || result === false) {
+      //  return false;
+      //}
+
+      if (result === false) {
         return false;
       }
-
       return canCreate(s, target);
     }, undefined);
 

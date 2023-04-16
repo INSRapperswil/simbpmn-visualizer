@@ -256,6 +256,13 @@ ReplaceMenuProvider.prototype.getEntries = function (element) {
                 });
                 this._modeling.createShape(serverRelease, { x: serverDelay.x + serverDelay.width + 45, y: serverDelay.y + serverDelay.height / 2 }, serverDelay.parent);
 
+                var colorFill = element.di.get('color:background-color');
+                var colorStroke = element.di.get('color:border-color')
+                if (colorFill && colorStroke) {
+                    this._modeling.setColor(serverSeize, { fill: colorFill, stroke: colorStroke });
+                    this._modeling.setColor(serverRelease, { fill: colorFill, stroke: colorStroke });
+                }
+
                 var incoming = [...serverDelay.incoming];
                 var outgoing = [...serverDelay.outgoing];
 

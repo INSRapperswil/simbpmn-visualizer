@@ -296,13 +296,15 @@ window.electronAPI.adjustResourcesInLogic((event, resources) => {
   let cnt = 0;
   resources.forEach(element => {
     var id;
-    var name;
     if (typeof element[0] === 'string') {
       id = "Resource_" + element[0];
     } else {
       id = element[0].id;
     }
-    name = element[1];
+    var name = element[1];
+    var colorFill = element[2];
+    var colorStroke = element[3];
+
     ids.push(id);
     var existingResource = elementRegistry.get(id);
 
@@ -320,6 +322,11 @@ window.electronAPI.adjustResourcesInLogic((event, resources) => {
           name: name
         });
       }
+
+      if (colorFill && colorStroke && (colorFill != existingResource.di.get('color:background-color') || colorStroke != existingResource.di.get('color:border-color'))) {
+        modeling.setColor(existingResource, { fill: colorFill, stroke: colorStroke });
+      }
+
     }
     cnt++;
   });

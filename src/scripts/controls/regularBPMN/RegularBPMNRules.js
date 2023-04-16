@@ -98,9 +98,9 @@ RegularBPMNRules.prototype.init = function () {
     var target = context.target,
       shapes = context.shapes;
 
-    var type;
+    //var type;
 
-    // do not allow mixed movements of custom / BPMN shapes
+    // disabled: do not allow mixed movements of custom / BPMN shapes
     // if any shape cannot be moved, the group cannot be moved, too
     var allowed = reduce(shapes, function (result, s) {
       //if (type === undefined) {
@@ -111,7 +111,7 @@ RegularBPMNRules.prototype.init = function () {
       //  return false;
       //}
 
-            if (result === false) {
+      if (result === false) {
         return false;
       }
       return canCreate(s, target);
@@ -179,7 +179,7 @@ RegularBPMNRules.prototype.init = function () {
   this.addRule('elements.delete', function (context) {
     // allow only some
     return context.elements.filter(function (e) {
-      if(e.businessObject.$instanceOf('regularBPMN:Resource')) {
+      if (e.businessObject.$instanceOf('regularBPMN:Resource')) {
         return !e.businessObject.isFromParent;
       }
       return true;

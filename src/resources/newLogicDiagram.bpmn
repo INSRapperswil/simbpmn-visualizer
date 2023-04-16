@@ -42,7 +42,7 @@
         <di:waypoint x="228" y="270" />
         <di:waypoint x="300" y="270" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Queue_15le3g8_di" bpmnElement="Queue_15le3g8" bioc:stroke="#1e88e5" bioc:fill="#bbdefb" color:background-color="#bbdefb" color:border-color="#1e88e5">
+      <bpmndi:BPMNShape id="Queue_15le3g8_di" bpmnElement="Queue_15le3g8">
         <dc:Bounds x="300" y="230" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Server_0w0doh4_di" bpmnElement="Server_0w0doh4">

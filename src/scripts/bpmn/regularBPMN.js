@@ -412,13 +412,13 @@ function adjustResourcesInLogic(shape, disconnectingResource) {
   const resources = incoming.reduce((resources, connection) => {
     if (is(connection.source, "regularBPMN:Resource") && (!disconnectingResource || disconnectingResource != connection.source)) {
       var bo = getBusinessObject(connection.source);
-      resources.push([connection.source, bo.name]);
+      resources.push([connection.source, bo.name, connection.source.di.get('color:background-color'), connection.source.di.get('color:border-color')]);
     }
     return resources;
   }, []);
 
   if (is(shape, "bpmn:Task")) {
-    resources.push(["default", "default"]);
+    resources.push(["default", "default", shape.di.get('color:background-color'), shape.di.get('color:border-color')]);
   }
   window.electronAPI.adjustResourcesInLogicRelay(resources);
 }
@@ -429,8 +429,6 @@ function adjustResourcesInSubprocess(shape, disconnectingResource) {
   const incoming = shape.incoming || [];
   const resources = incoming.reduce((resources, connection) => {
     if (is(connection.source, "regularBPMN:Resource") && (!disconnectingResource || disconnectingResource != connection.source)) {
-      var bo = getBusinessObject(connection.source);
-      //resources.push([connection.source, bo.name]);
       resources.push(connection.source);
     }
     return resources;

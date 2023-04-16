@@ -59,8 +59,6 @@ export default class RegularBPMNRenderer extends BaseRenderer {
       return task;
     }
 
-    console.log('render');
-
     var svg;
     var color = shape.di.get('color:background-color')
     if (color) {

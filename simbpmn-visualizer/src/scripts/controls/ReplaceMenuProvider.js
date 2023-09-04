@@ -19,7 +19,7 @@ import {
 
 import {
     isCustom
-  } from '../utils/ElementUtil';
+} from '../utils/ElementUtil';
 
 import * as replaceOptions from './replace/ReplaceOptions';
 
@@ -77,6 +77,7 @@ ReplaceMenuProvider.prototype.getEntries = function (element) {
 
     var entries;
 
+    console.log(element)
     if (!rules.allowed('shape.replace', { element: element })) {
         return [];
     }
@@ -266,8 +267,8 @@ ReplaceMenuProvider.prototype.getEntries = function (element) {
                 var incoming = [...serverDelay.incoming];
                 var outgoing = [...serverDelay.outgoing];
 
-                incoming.forEach(x => this._modeling.connect(x.source, serverSeize, {type: x.type}));
-                outgoing.forEach(x => this._modeling.connect(serverRelease, x.target, {type: x.type}));
+                incoming.forEach(x => this._modeling.connect(x.source, serverSeize, { type: x.type }));
+                outgoing.forEach(x => this._modeling.connect(serverRelease, x.target, { type: x.type }));
 
                 //incoming.forEach(x => x.target = serverSeize);
                 //outgoing.forEach(x => x.source = serverRelease);
@@ -279,13 +280,6 @@ ReplaceMenuProvider.prototype.getEntries = function (element) {
 
                 this._modeling.connect(serverSeize, serverDelay);
                 this._modeling.connect(serverDelay, serverRelease);
-
-                // TODO: Create Logic for Splitting
-                console.log(123);
-                // TODO: set custom property that turns sequence flow into custom sequence flow
-                //this._modeling.updateProperties(element, {
-                //    name: "blue"
-                //});
             }
         };
 
@@ -304,6 +298,73 @@ ReplaceMenuProvider.prototype.getEntries = function (element) {
                 //});
             }
         }]
+    }
+
+    if (is(businessObject, "regularBPMN:Resource") || is(businessObject, "regularBPMN:ResourceBoM") || is(businessObject, "regularBPMN:ResourceWaste")) {
+        var entries = [];
+        if (!is(businessObject, "regularBPMN:Resource")) {
+            var menuEntry = {
+                label: translate('Resource'),
+                className: "regularBPMN-resource-replace-icon",
+                id: 'change-to-resource',
+                action: () => {
+                    var res = replaceElement(element, { type: 'regularBPMN:Resource' }, {
+                        autoResize: false,
+                        layoutConnection: true
+                    });
+
+                    
+                     this._modeling.moveElements([res], {
+                         x: element.x-res.x,
+                         y: element.y-res.y,
+                     });
+
+                     
+                }
+            };
+
+            entries.push(menuEntry);
+        }
+        if (!is(businessObject, "regularBPMN:ResourceBoM")) {
+            var menuEntry = {
+                label: translate('Bill of Material'),
+                className: "regularBPMN-bom-replace-icon",
+                id: 'change-to-resource-bom',
+                action: () => {
+                    var res = replaceElement(element, { type: 'regularBPMN:ResourceBoM' }, {
+                        autoResize: false,
+                        layoutConnection: true
+                    });
+
+                    this._modeling.moveElements([res], {
+                        x: element.x-res.x,
+                        y: element.y-res.y,
+                    });
+                }
+            };
+
+            entries.push(menuEntry);
+        }
+        if (!is(businessObject, "regularBPMN:ResourceWaste")) {
+            var menuEntry = {
+                label: translate('Waste'),
+                className: "regularBPMN-waste-replace-icon",
+                id: 'change-to-resource-waste',
+                action: () => {
+                    var res = replaceElement(element, { type: 'regularBPMN:ResourceWaste' }, {
+                        autoResize: false,
+                        layoutConnection: true
+                    });
+                    this._modeling.moveElements([res], {
+                        x: element.x-res.x,
+                        y: element.y-res.y,
+                    });
+                }
+            };
+
+            entries.push(menuEntry);
+        }
+        return entries;
     }
 
     if (isCustom(element)) {

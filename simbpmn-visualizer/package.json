@@ -1,7 +1,7 @@
 {
   "name": "simbpmn",
   "productName": "SimBPMN Visualizer",
-  "version": "1.0.202210091",
+  "version": "1.1.0-build.202307131",
   "description": "Specification application for simbpmn notation",
   "main": ".webpack/main",
   "scripts": {
@@ -15,7 +15,7 @@
   },
   "keywords": [],
   "author": {
-    "name": "Sven Höpfner, Michel Mirsayyah",
+    "name": "OST - Ostschweizer Fachhochschule / Thomas Kehl, Andreas Rinkel",
     "url": "https://www.ost.ch"
   },
   "license": "MIT",

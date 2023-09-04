@@ -203,6 +203,32 @@
             "isAttr": true
           }
         ]
+      },
+      {
+        "name": "ResourceBoM",
+        "superClass": [
+          "LogicObject"
+        ],
+        "properties": [
+          {
+            "name": "isFromParent",
+            "type": "bool",
+            "isAttr": true
+          }
+        ]
+      },
+      {
+        "name": "ResourceWaste",
+        "superClass": [
+          "LogicObject"
+        ],
+        "properties": [
+          {
+            "name": "isFromParent",
+            "type": "bool",
+            "isAttr": true
+          }
+        ]
       }
     ]
   }

@@ -78,6 +78,10 @@ RegularBPMNRules.prototype.init = function () {
         return { type: 'bpmn:Association' };
       } else if (is(source, 'regularBPMN:Resource') && !isCustom(target)) {
         return { type: 'bpmn:Association' };
+      } else if (is(source, 'regularBPMN:ResourceBoM') && !isCustom(target)) {
+        return { type: 'bpmn:Association' };
+      } else if (is(source, 'regularBPMN:ResourceWaste') && !isCustom(target)) {
+        return { type: 'bpmn:Association' };
       } else {
         return false;
       }
@@ -85,6 +89,10 @@ RegularBPMNRules.prototype.init = function () {
       if (is(source, 'regularBPMN:Entity') && !isCustom(source)) {
         return { type: 'bpmn:Association' };
       } else if (is(source, 'regularBPMN:Resource') && !isCustom(source)) {
+        return { type: 'bpmn:Association' };
+      } else if (is(source, 'regularBPMN:ResourceBoM') && !isCustom(source)) {
+        return { type: 'bpmn:Association' };
+      } else if (is(source, 'regularBPMN:ResourceWaste') && !isCustom(source)) {
         return { type: 'bpmn:Association' };
       } else {
         return false;
@@ -179,7 +187,7 @@ RegularBPMNRules.prototype.init = function () {
   this.addRule('elements.delete', function (context) {
     // allow only some
     return context.elements.filter(function (e) {
-      if (e.businessObject.$instanceOf('regularBPMN:Resource')) {
+      if (e.businessObject.$instanceOf('regularBPMN:Resource') || e.businessObject.$instanceOf('regularBPMN:ResourceBoM') || e.businessObject.$instanceOf('regularBPMN:ResourceWaste')) {
         return !e.businessObject.isFromParent;
       }
       return true;

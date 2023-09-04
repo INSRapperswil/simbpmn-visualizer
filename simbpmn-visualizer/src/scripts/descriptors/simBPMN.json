@@ -246,6 +246,22 @@
         ],
         "properties": [
         ]
+      },
+      {
+        "name": "ResourceBoM",
+        "superClass": [
+          "LogicObject"
+        ],
+        "properties": [
+        ]
+      },
+      {
+        "name": "ResourceWaste",
+        "superClass": [
+          "LogicObject"
+        ],
+        "properties": [
+        ]
       }
     ]
   }

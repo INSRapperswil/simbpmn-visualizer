@@ -43,7 +43,7 @@ var bpmnModeler = new BpmnModeler({
     SimBPMNLabelEditingProvider
   ],
   colorPicker: {
-    colors: [ {
+    colors: [{
       label: 'Default',
       fill: undefined,
       stroke: undefined
@@ -79,7 +79,7 @@ var bpmnModeler = new BpmnModeler({
       label: 'Olivegreen',
       fill: '#BDB76B',
       stroke: '#808000'
-    } ]
+    }]
   },
   moddleExtensions: {
     simbpmn: simBpmnModdleDescriptor,
@@ -130,7 +130,7 @@ eventBus.on("commandStack.connection.create.postExecuted", function (event) {
   //console.log("Source:", source);
   //console.log("Target:", target);
 
-  if (is(source, "simBPMN:Resource")) {
+  if (is(source, "simBPMN:Resource") || is(source, "simBPMN:ResourceBoM") || is(source, "simBPMN:ResourceWaste")) {
     //console.log("Association to resource");
     adjustResources(target);
   }
@@ -147,7 +147,7 @@ eventBus.on("commandStack.connection.delete.preExecute", function (event) {
   //console.log("Source:", connection.source);
   //console.log("Target:", connection.target);
 
-  if (is(connection.source, "simBPMN:Resource")) {
+  if (is(connection.source, "simBPMN:Resource") || is(connection.source, "simBPMN:ResourceBoM") || is(connection.source, "simBPMN:ResourceWaste")) {
     adjustResources(connection.target, connection.source);
   }
 });
@@ -193,9 +193,9 @@ function adjustResourcesInSubprocess(shape, disconnectingResource) {
 
   const incoming = shape.incoming || [];
   const resources = incoming.reduce((resources, connection) => {
-    if (is(connection.source, "simBPMN:Resource") && (!disconnectingResource || disconnectingResource != connection.source)) {
+    if ((is(connection.source, "simBPMN:Resource") || is(connection.source, "simBPMN:ResourceBoM") || is(connection.source, "simBPMN:ResourceWaste")) && (!disconnectingResource || disconnectingResource != connection.source)) {
       var bo = getBusinessObject(connection.source);
-      resources.push([connection.source, bo.name]);
+      resources.push([connection.source, bo.name, connection.source.di.get('color:background-color'), connection.source.di.get('color:border-color'), connection.source.type]);
     }
     return resources;
   }, []);
@@ -205,6 +205,7 @@ function adjustResourcesInSubprocess(shape, disconnectingResource) {
   let elementRegistry = bpmnModeler.get('elementRegistry');
   let moddle = bpmnModeler.get('moddle');
   let modeling = bpmnModeler.get('modeling');
+  let bpmnReplace= bpmnModeler.get('bpmnReplace');
   //let root = bpmnModeler.get('canvas').getRootElement();
 
   let root = shape;
@@ -226,12 +227,16 @@ function adjustResourcesInSubprocess(shape, disconnectingResource) {
     }
     id = `${shape.id}_${id}`;
     name = element[1];
+    var colorFill = element[2];
+    var colorStroke = element[3];
+
     ids.push(id);
     existingResource = elementRegistry.get(id);
 
+    var type = element[4];
     if (!existingResource) {
       let resource = elementFactory.createShape({
-        type: 'simBPMN:Resource'
+        type: type
       });
 
       resource.businessObject["id"] = id;
@@ -247,11 +252,26 @@ function adjustResourcesInSubprocess(shape, disconnectingResource) {
       console.log("create new resource")
       modeling.createShape(resource, { x: x, y: y }, root);
     } else {
+      if (existingResource.type != type) {
+        var res = bpmnReplace.replaceElement(existingResource, { type: type }, {
+          autoResize: false,
+          layoutConnection: true
+        });
+
+        modeling.moveElements([res], {
+          x: existingResource.x - res.x,
+          y: existingResource.y - res.y,
+        });
+      }      
       if (existingResource.businessObject["name"] != name) {
         console.log("update name for resource ", shape, "(" + name + ")")
         modeling.updateProperties(existingResource, {
           name: name
         });
+      }
+
+      if (colorFill && colorStroke && (colorFill != existingResource.di.get('color:background-color') || colorStroke != existingResource.di.get('color:border-color'))) {
+        modeling.setColor(existingResource, { fill: colorFill, stroke: colorStroke });
       }
     }
     cnt++;
@@ -260,7 +280,7 @@ function adjustResourcesInSubprocess(shape, disconnectingResource) {
 
 
   elementRegistry.getAll().forEach(shape => {
-    if (is(shape, "simBPMN:Resource")) {
+    if (is(shape, "simBPMN:Resource") || is(shape, "simBPMN:ResourceBoM") || is(shape, "simBPMN:ResourceWaste")) {
       let id = shape.businessObject["id"];
       if (shape.businessObject.isFromParent && shape.parent == root && !ids.some(x => x === id)) {
         console.log("remove resource ", shape)
@@ -290,6 +310,7 @@ window.electronAPI.adjustResourcesInLogic((event, resources) => {
   let elementRegistry = bpmnModeler.get('elementRegistry');
   let moddle = bpmnModeler.get('moddle');
   let modeling = bpmnModeler.get('modeling');
+  let bpmnReplace= bpmnModeler.get('bpmnReplace');
   let root = bpmnModeler.get('canvas').getRootElement();
 
   const ids = [];
@@ -308,15 +329,27 @@ window.electronAPI.adjustResourcesInLogic((event, resources) => {
     ids.push(id);
     var existingResource = elementRegistry.get(id);
 
+    var type = element[4].replace("regularBPMN", "simBPMN");
     if (!existingResource) {
       let resource = elementFactory.createShape({
-        type: 'simBPMN:Resource'
+        type: type
       });
 
       resource.businessObject["id"] = id;
       resource.businessObject["name"] = name;
       modeling.createShape(resource, { x: 300 + (cnt * 50), y: 100 }, root);
     } else {
+      if (existingResource.type != type) {
+        var res = bpmnReplace.replaceElement(existingResource, { type: type }, {
+          autoResize: false,
+          layoutConnection: true
+        });
+
+        modeling.moveElements([res], {
+          x: existingResource.x - res.x,
+          y: existingResource.y - res.y,
+        });
+      }
       if (existingResource.businessObject["name"] != name) {
         modeling.updateProperties(existingResource, {
           name: name
@@ -332,7 +365,7 @@ window.electronAPI.adjustResourcesInLogic((event, resources) => {
   });
 
   elementRegistry.getAll().forEach(shape => {
-    if (is(shape, "simBPMN:Resource") && !is(shape.parent, 'bpmn:SubProcess')) {
+    if ((is(shape, "simBPMN:Resource") || is(shape, "simBPMN:ResourceBoM") || is(shape, "simBPMN:ResourceWaste")) && !is(shape.parent, 'bpmn:SubProcess')) {
       let id = shape.businessObject["id"];
       if (!ids.some(x => x === id)) {
         modeling.removeShape(shape);

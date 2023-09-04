@@ -30,8 +30,12 @@ export function isLabelExternal(semantic) {
          is(semantic, 'bpmn:MessageFlow') ||
          is(semantic, 'bpmn:Group') ||
          is(semantic, 'regularBPMN:Resource') ||
+         is(semantic, 'regularBPMN:ResourceBoM') ||
+         is(semantic, 'regularBPMN:ResourceWaste') ||
          is(semantic, 'regularBPMN:Entity') ||
          is(semantic, 'simBPMN:Resource') ||
+         is(semantic, 'simBPMN:ResourceBoM') ||
+         is(semantic, 'simBPMN:ResourceWaste') ||
          is(semantic, 'simBPMN:Queue') ||
          is(semantic, 'simBPMN:Server') ||
          is(semantic, 'simBPMN:ServerSeize') ||

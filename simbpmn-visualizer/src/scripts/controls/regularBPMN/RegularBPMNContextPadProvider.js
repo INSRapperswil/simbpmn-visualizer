@@ -22,19 +22,19 @@ export default class RegularBPMNContextPadProvider {
 
     getContextPadEntries(element) {
         return function (entries) {
-            if (is(element, "regularBPMN:Entity") || is(element, "regularBPMN:Resource")) {
+            if (is(element, "regularBPMN:Entity") || is(element, "regularBPMN:Resource") || is(element, "regularBPMN:ResourceBoM") || is(element, "regularBPMN:ResourceWaste")) {
                 Object.keys(entries).forEach(function (k) {
                     if (k.startsWith('append.')) {
                         delete entries[k];
                     }
                 });
-                delete entries["replace"];
-
-                if (is(element, 'regularBPMN:Resource') && element.businessObject.isFromParent) {
-                    delete entries["set-color"];
-                }
             }
-
+            if (is(element, "regularBPMN:Entity") ) {
+                delete entries["replace"];
+            }
+            if ((is(element, 'regularBPMN:Resource') || is(element, 'regularBPMN:ResourceBoM') || is(element, 'regularBPMN:ResourceWaste')) && element.businessObject.isFromParent) {
+                delete entries["set-color"];
+            }
             return entries;
         };
     }

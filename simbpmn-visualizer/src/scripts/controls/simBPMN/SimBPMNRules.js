@@ -71,21 +71,21 @@ SimBPMNRules.prototype.init = function () {
 
 
     // allow connection between custom shape and task
-    if (is(source, "simBPMN:Token") || is(source, "simBPMN:Resource")) {
+    if (is(source, "simBPMN:Token") || is(source, "simBPMN:Resource") || is(source, "simBPMN:ResourceBoM") || is(source, "simBPMN:ResourceWaste")) {
       if (is(target, "bpmn:Process")) {
         return false;
       }
-      if (is(source, 'simBPMN:Token') && !is(target, 'simBPMN:Token') && !is(target, 'simBPMN:Resource')) {
+      if (is(source, 'simBPMN:Token') && !is(target, 'simBPMN:Token') && !is(target, 'simBPMN:Resource') && !is(target, 'simBPMN:ResourceBoM') && !is(target, 'simBPMN:ResourceWaste')) {
         return { type: 'bpmn:Association' };
-      } else if (is(source, 'simBPMN:Resource') && !is(target, 'simBPMN:Token') && !is(target, 'simBPMN:Resource')) {
+      } else if ((is(source, 'simBPMN:Resource') || is(source, 'simBPMN:ResourceBoM') || is(source, 'simBPMN:ResourceWaste')) && !is(target, 'simBPMN:Token') && !is(target, 'simBPMN:Resource')) {
         return { type: 'bpmn:Association' };
       } else {
         return false;
       }
-    } else if (is(target, "simBPMN:Token") || is(target, "simBPMN:Resource")) {
-      if (is(source, 'simBPMN:Token') && !is(target, 'simBPMN:Token') && !is(target, 'simBPMN:Resource')) {
+    } else if (is(target, "simBPMN:Token") || is(target, "simBPMN:Resource")|| is(target, "simBPMN:ResourceBoM")|| is(target, "simBPMN:ResourceWaste")) {
+      if (is(source, 'simBPMN:Token') && !is(target, 'simBPMN:Token') && !is(target, 'simBPMN:Resource') && !is(target, 'simBPMN:ResourceBoM') && !is(target, 'simBPMN:ResourceWaste')) {
         return { type: 'bpmn:Association' };
-      } else if (is(source, 'simBPMN:Resource') && !is(target, 'simBPMN:Token') && !is(target, 'simBPMN:Resource')) {
+      } else if ((is(source, 'simBPMN:Resource') || is(source, 'simBPMN:ResourceBoM') || is(source, 'simBPMN:ResourceWaste')) && !is(target, 'simBPMN:Token') && !is(target, 'simBPMN:Resource') && !is(target, 'simBPMN:ResourceBoM') && !is(target, 'simBPMN:ResourceWaste')) {
         return { type: 'bpmn:Association' };
       } else {
         return false;
@@ -183,7 +183,7 @@ SimBPMNRules.prototype.init = function () {
 
     // allow only some
     return context.elements.filter(function (e) {
-      return !e.businessObject.$instanceOf('simBPMN:Resource');
+      return !e.businessObject.$instanceOf('simBPMN:Resource') && !e.businessObject.$instanceOf('simBPMN:ResourceBoM') && !e.businessObject.$instanceOf('simBPMN:ResourceWaste');
     });
 
     // disallow all together

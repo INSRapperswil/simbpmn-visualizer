@@ -29,14 +29,16 @@ export default class SimBPMNContextPadProvider {
         } = this;
 
         return function (entries) {
-            if (is(element, "simBPMN:Token") || is(element, "simBPMN:Resource")) {
+            if (is(element, "simBPMN:Token") || is(element, "simBPMN:Resource") || is(element, "simBPMN:ResourceBoM") || is(element, "simBPMN:ResourceWaste")) {
                 Object.keys(entries).forEach(function (k) {
                     if (k.startsWith('append.')) {
                         delete entries[k];
                     }
                 });
                 delete entries["replace"];
-                delete entries["set-color"];
+                if (is(element, "simBPMN:Resource") || is(element, "simBPMN:ResourceBoM") || is(element, "simBPMN:ResourceWaste")) {
+                    delete entries["set-color"];
+                }
             } else {
                 assign(entries, { 'append.simBPMN-Queue': createSimBPMNAction('simBPMN:Queue', 'simBPMN', translate('Append Queue'), 'simBPMN-queue-icon') })
                 assign(entries, { 'append.simBPMN-Server': createSimBPMNAction('simBPMN:Server', 'simBPMN', translate('Append Server'), 'simBPMN-server-icon') })

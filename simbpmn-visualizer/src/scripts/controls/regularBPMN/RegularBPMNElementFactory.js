@@ -135,7 +135,9 @@ import {
     var shapes = {
       __default: { width: 100, height: 80 },
       'regularBPMN:Entity': { width: 40, height: 40 },
-      'regularBPMN:Resource': { width: 40, height: 40 }
+      'regularBPMN:Resource': { width: 40, height: 40 },
+      'regularBPMN:ResourceBoM': { width: 40, height: 40 },
+      'regularBPMN:ResourceWaste': { width: 40, height: 40 }
     };
   
     return shapes[type] || shapes.__default;

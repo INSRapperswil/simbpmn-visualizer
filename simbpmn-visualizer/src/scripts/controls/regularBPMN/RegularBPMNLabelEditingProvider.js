@@ -92,11 +92,11 @@ export default function RegularBPMNLabelEditingProvider(
 
   function activateDirectEdit(element, force) {
     //CUSTOM
-    if (is(element, 'regularBPMN:Resource') && element.businessObject.isFromParent) {
+    if ((is(element, 'regularBPMN:Resource') || is(element, 'regularBPMN:ResourceBoM') || is(element, 'regularBPMN:ResourceWaste')) && element.businessObject.isFromParent) {
       return;
     }
     if (force ||
-      isAny(element, ['bpmn:Task', 'bpmn:TextAnnotation', 'regularBPMN:Resource']) ||
+      isAny(element, ['bpmn:Task', 'bpmn:TextAnnotation', 'regularBPMN:Resource', 'regularBPMN:ResourceBoM', 'regularBPMN:ResourceWaste']) ||
       isCollapsedSubProcess(element)) {
 
       directEditing.activate(element);
@@ -151,7 +151,9 @@ RegularBPMNLabelEditingProvider.prototype.activate = function (element) {
       'bpmn:Lane',
       'bpmn:CallActivity',
       //CUSTOM
-      'regularBPMN:Resource'
+      'regularBPMN:Resource',
+      'regularBPMN:ResourceBoM',
+      'regularBPMN:ResourceWaste',
       //END_CUSTOM
     ]) ||
     isCollapsedSubProcess(element)

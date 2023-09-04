@@ -92,7 +92,7 @@ export default function SimBPMNLabelEditingProvider(
 
   function activateDirectEdit(element, force) {
     //CUSTOM
-    if (isAny(element, ['simBPMN:Resource'])) {
+    if (isAny(element, ['simBPMN:Resource', 'simBPMN:ResourceBoM', 'simBPMN:ResourceWaste'])) {
       return;
     }
     if (force ||
@@ -151,7 +151,9 @@ SimBPMNLabelEditingProvider.prototype.activate = function (element) {
       'bpmn:Lane',
       'bpmn:CallActivity',
       //CUSTOM
-      'simBPMN:Resource'
+      'simBPMN:Resource',
+      'simBPMN:ResourceBoM',
+      'simBPMN:ResourceWaste'
       //END_CUSTOM
     ]) ||
     isCollapsedSubProcess(element)

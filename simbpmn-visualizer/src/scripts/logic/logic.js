@@ -22,7 +22,7 @@ export class logic {
     readLogic(businessObject) {
         let xml = businessObject.$attrs.content;
         if (xml === undefined) {
-            if(is(businessObject, "bpmn:SequenceFlow") || is(businessObject, "bpmn:Gateway") || is(businessObject, "bpmn:Event") || is(businessObject, "regularBPMN:Entity") || is(businessObject, "regularBPMN:Resource")) {
+            if(is(businessObject, "bpmn:SequenceFlow") || is(businessObject, "bpmn:Gateway") || is(businessObject, "bpmn:Event") || is(businessObject, "regularBPMN:Entity") || is(businessObject, "regularBPMN:Resource") || is(businessObject, "regularBPMN:ResourceBoM") || is(businessObject, "regularBPMN:ResourceWaste")) {
                 return emptyDiagramXML;
             } 
             return diagramXML;

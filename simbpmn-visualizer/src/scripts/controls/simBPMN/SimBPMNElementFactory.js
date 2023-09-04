@@ -136,6 +136,8 @@ SimBPMNElementFactory.prototype._getCustomElementSize = function (type) {
     __default: { width: 100, height: 80 },
     'simBPMN:Token': { width: 40, height: 40 },
     'simBPMN:Resource': { width: 40, height: 40 },
+    'simBPMN:ResourceWaste': { width: 40, height: 40 },
+    'simBPMN:ResourceBoM': { width: 40, height: 40 },
     'simBPMN:ServerSeize': { width: 40, height: 80 },
     'simBPMN:ServerDelay': { width: 35, height: 80 },
     'simBPMN:ServerRelease': { width: 40, height: 80 }

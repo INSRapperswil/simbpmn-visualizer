@@ -1,6 +1,7 @@
 import {
     getBusinessObject,
-    is
+    is,
+    isConnection
 } from '../utils/ModelUtil';
 
 import {
@@ -77,12 +78,11 @@ ReplaceMenuProvider.prototype.getEntries = function (element) {
 
     var entries;
 
-    console.log(element)
     if (!rules.allowed('shape.replace', { element: element })) {
         return [];
     }
 
-    console.log("rmp");
+    console.log("rmp", element);
 
     var differentType = isDifferentType(element);
 
@@ -284,20 +284,6 @@ ReplaceMenuProvider.prototype.getEntries = function (element) {
         };
 
         return [menuEntry];
-
-        return [{
-            className: "bpmn-icon-parallel-mi-marker",
-            label: "Blue Sequence Flow",
-            id: 'split-to-size-process-release',
-            action: () => {
-                // TODO: Create Logic for Splitting
-                console.log(123);
-                // TODO: set custom property that turns sequence flow into custom sequence flow
-                //this._modeling.updateProperties(element, {
-                //    name: "blue"
-                //});
-            }
-        }]
     }
 
     if (is(businessObject, "regularBPMN:Resource") || is(businessObject, "regularBPMN:ResourceBoM") || is(businessObject, "regularBPMN:ResourceWaste")) {
@@ -313,13 +299,13 @@ ReplaceMenuProvider.prototype.getEntries = function (element) {
                         layoutConnection: true
                     });
 
-                    
-                     this._modeling.moveElements([res], {
-                         x: element.x-res.x,
-                         y: element.y-res.y,
-                     });
 
-                     
+                    this._modeling.moveElements([res], {
+                        x: element.x - res.x,
+                        y: element.y - res.y,
+                    });
+
+
                 }
             };
 
@@ -337,8 +323,8 @@ ReplaceMenuProvider.prototype.getEntries = function (element) {
                     });
 
                     this._modeling.moveElements([res], {
-                        x: element.x-res.x,
-                        y: element.y-res.y,
+                        x: element.x - res.x,
+                        y: element.y - res.y,
                     });
                 }
             };
@@ -356,8 +342,8 @@ ReplaceMenuProvider.prototype.getEntries = function (element) {
                         layoutConnection: true
                     });
                     this._modeling.moveElements([res], {
-                        x: element.x-res.x,
-                        y: element.y-res.y,
+                        x: element.x - res.x,
+                        y: element.y - res.y,
                     });
                 }
             };
@@ -371,6 +357,75 @@ ReplaceMenuProvider.prototype.getEntries = function (element) {
         return [];
     }
 
+    if (isConnection(element) && (element.source.type.includes("regularBPMN:Resource") || element.target.type.includes("regularBPMN:Resource"))) {
+        
+        // var entries = [];
+        // if (!is(element, "bpmn:DataOutputAssociation")) {
+        //     var menuEntry = {
+        //         label: translate('Association to Resource'),
+        //         className: "regularBPMN-association-right-icon",
+        //         id: 'change-to-data-output-association-to-resource',
+        //         action: () => {
+        //             if (element.source.type.includes(":Resource")) {
+        //                 this._modeling.connect(element.target, element.source, {
+        //                     type: "bpmn:DataOutputAssociation",
+        //                     waypoints: element.waypoints.slice()
+        //                 });
+        //             } else {
+        //                 this._modeling.connect(element.source, element.target, {
+        //                     type: "bpmn:DataOutputAssociation",
+        //                     waypoints: element.waypoints.slice()
+        //                 });
+        //             }
+        //             this._modeling.removeConnection(element);
+        //         }
+        //     };
+
+        //     entries.push(menuEntry);
+        // }
+        // if (!is(element, "bpmn:DataInputAssociation")) {
+        //     var menuEntry = {
+        //         label: translate('Association from Resource'),
+        //         className: "regularBPMN-association-left-icon",
+        //         id: 'change-to-data-output-association-from-resource',
+        //         action: () => {
+        //             if (element.target.type.includes(":Resource")) {
+        //                 this._modeling.connect(element.target, element.source, {
+        //                     type: "bpmn:DataInputAssociation",
+        //                     waypoints: element.waypoints.slice()
+        //                 });
+        //             } else {
+        //                 this._modeling.connect(element.source, element.target, {
+        //                     type: "bpmn:DataInputAssociation",
+        //                     waypoints: element.waypoints.slice()
+        //                 });
+        //             }
+        //             this._modeling.removeConnection(element);
+
+        //         }
+        //     };
+
+        //     entries.push(menuEntry);
+        // }
+        // if (!is(element, "bpmn:Association")) {
+        //     var menuEntry = {
+        //         label: translate('Association'),
+        //         className: "regularBPMN-association-icon",
+        //         id: 'change-to-association',
+        //         action: () => {
+        //             this._modeling.connect(element.source, element.target, {
+        //                 type: "bpmn:Association",
+        //                 waypoints: element.waypoints.slice()
+        //             });
+        //             this._modeling.removeConnection(element);
+
+        //         }
+        //     };
+
+        //     entries.push(menuEntry);
+        // }
+        // return entries;
+    }
     // sequence flows
     if (is(businessObject, 'bpmn:SequenceFlow')) {
         return this._createSequenceFlowEntries(element, replaceOptions.SEQUENCE_FLOW);

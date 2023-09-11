@@ -5,9 +5,9 @@ export class Sidebar {
 
   readFiles = async function (path: string) {
     try {
-      console.log("try getting files from: " + path);
+      //console.log("try getting files from: ", path);
       const result = await (window as any).electronAPI.scanDirectory(path);
-      console.log("file result: " + result);
+      //console.log("file result: ",  result);
       return result;
     } catch (ex) {
       console.log("exception: " + ex);
@@ -39,7 +39,7 @@ export class Sidebar {
   };
 
   displayItem = function (htmlNode: any, item: FileItem) {
-    console.debug("processing element: " + item);
+    //console.debug("processing element: ", item);
     this.createHtmlObject(htmlNode, item);
   };
 
@@ -80,6 +80,8 @@ export class Sidebar {
 
     const listItem = document.createElement("li");
 
+    const children = document.createElement("ul");
+
     const node = document.createElement("input");
     node.id = 'listItem-' + fileItem.filename;
     node.classList.add("sidebar_filelist");
@@ -88,17 +90,90 @@ export class Sidebar {
     const label = document.createElement("label");
     label.htmlFor = "listItem-" + fileItem.filename;
     label.classList.add("listItemLabel");
-    label.innerHTML = fileItem.filename.replace(/\.[^/.]+$/, "");
+    const labelText = fileItem.filename.replace(/\.[^/.]+$/, "");
+    const labelDiv = document.createElement("div")
+    labelDiv.textContent = labelText;
+    label.appendChild(labelDiv);
+    //label.innerHTML = labelText;
+
+    const input = document.createElement("input");
+    input.style.display = "none";
+    input.style.width = "100%"
+    input.addEventListener("keydown", (event) => {
+      // Überprüfen, ob die gedrückte Taste die Enter-Taste ist (Keycode 13)
+      if (event.key === "Enter") {
+        event.stopPropagation();
+
+        if ((window as any).electronAPI.projectExists(input.value)) {
+          (window as any).electronAPI.showMessage("Warning", "Project already exists.", "warning");
+          return;
+        }
+
+        (window as any).electronAPI.renameProject(labelDiv.textContent, input.value)
+
+        fileItem.filename = input.value + ".bpmn";
+
+        children.firstChild.textContent = fileItem.filename;
+
+        const lastIndex = fileItem.path.lastIndexOf(labelDiv.textContent);
+        fileItem.path = fileItem.path.substring(0, lastIndex) + input.value + fileItem.path.substring(lastIndex + labelDiv.textContent.length);
+        if (fileItem.children.length > 0) {
+          for (const child of fileItem.children[0].children) {
+            const lastIndex = child.path.lastIndexOf(labelDiv.textContent);
+            child.path = child.path.substring(0, lastIndex) + input.value + child.path.substring(lastIndex + labelDiv.textContent.length);
+          }
+        }
+        labelDiv.textContent = input.value;
+
+        input.style.display = "none";
+        label.style.display = "";
+        children.style.display = "";
+
+        node.checked = false;
+        // Hier können Sie den gewünschten Code ausführen, wenn die Enter-Taste gedrückt wird
+        //alert("Enter wurde gedrückt!");
+      } else if (event.key === "Escape") {
+        event.stopPropagation();
+
+        input.style.display = "none";
+        label.style.display = "";
+        children.style.display = "";
+        node.checked = false;
+      }
+    });
 
     const listControlElement = document.createElement("div");
-    listControlElement.classList.add("listDeleteButton");
-    listControlElement.addEventListener("click", (event) => {
-      event.stopPropagation();
-      (window as any).electronAPI.deleteFile(fileItem.path);
-    })
     label.appendChild(listControlElement);
 
-    const children = document.createElement("ul");
+    const listControlElementRename = document.createElement("div");
+    listControlElementRename.classList.add("listRenameButton");
+    listControlElementRename.addEventListener("click", (event) => {
+      event.stopPropagation();
+
+      input.style.display = "block";
+      label.style.display = "none";
+      children.style.display = "none";
+      input.value = labelDiv.textContent;
+
+      setTimeout(() => {
+        input.focus();
+        input.select();
+      });
+    })
+    listControlElement.appendChild(listControlElementRename);
+
+    const listControlElementDelete = document.createElement("div");
+    listControlElementDelete.classList.add("listDeleteButton");
+    listControlElementDelete.addEventListener("click", (event) => {
+      event.stopPropagation();
+      if ((window as any).electronAPI.askForDeleting() == 0) {
+        (window as any).electronAPI.deleteFile(fileItem.path);
+      }
+      node.checked = false;
+    })
+    listControlElement.appendChild(listControlElementDelete);
+
+
     const baseFileElement = document.createElement("li");
     baseFileElement.innerHTML = fileItem.filename;
     baseFileElement.classList.add("childListItem");
@@ -116,6 +191,7 @@ export class Sidebar {
         childElement.innerHTML = child.filename;
         childElement.style.paddingLeft = "20px"
         childElement.classList.add("childListItem");
+        console.log(child.path);
         childElement.addEventListener("click", () => {
           (window as any).electronAPI.openFile(child.path, true);
         });
@@ -127,6 +203,7 @@ export class Sidebar {
 
     listItem.appendChild(node);
     listItem.appendChild(label);
+    listItem.appendChild(input);
     listItem.appendChild(children);
 
     htmlNode.appendChild(listItem);

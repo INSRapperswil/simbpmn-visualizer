@@ -98,7 +98,6 @@ RegularBPMNRules.prototype.init = function () {
         return false;
       }
     }
-    console.log(10);
   }
 
   this.addRule('elements.move', Priority.High, function (context) {

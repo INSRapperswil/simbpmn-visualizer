@@ -87,3 +87,18 @@ ul{
 .listDeleteButton:hover{
     color:red;
 }
+
+.listRenameButton:before{
+    content: "\1F589";
+}
+
+.listRenameButton{
+    display: inline-block;
+    width:10px;
+    height:10px;
+    margin-right: 15px;
+}
+
+.listRenameButton:hover{
+    color:red;
+}

@@ -127,3 +127,7 @@ export function getParents(element, anyType) {
 export function isLabel(element) {
     return element && !!element.labelTarget;
 }
+
+export function isConnection(element) {
+  return element.waypoints;
+}

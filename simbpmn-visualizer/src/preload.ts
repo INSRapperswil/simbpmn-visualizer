@@ -30,7 +30,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
   openLogic: (callback: any) => ipcRenderer.on("openLogic", callback),
   adjustResourcesInLogic: (callback: any) => ipcRenderer.on("adjustResourcesInLogic", callback),
   askForSavingChanges: () => ipcRenderer.sendSync("askForSavingChanges"),
+  askForDeleting: () => ipcRenderer.sendSync("askForDeleting"),
   saveForQuit: (xml: string) => ipcRenderer.invoke("saveForQuit", xml),
   closeApp: () => ipcRenderer.sendSync("closeApp"),
-  isDev: () => ipcRenderer.sendSync("isDev")
+  isDev: () => ipcRenderer.sendSync("isDev"),
+  projectExists: (name: string) => ipcRenderer.sendSync("projectExists", name),
+  renameProject: (oldName: string, newName: string) => ipcRenderer.invoke("renameProject", oldName, newName),
+  showMessage: (title: string, message: string, type: string) => ipcRenderer.sendSync("showMessage", title, message, type)
 });

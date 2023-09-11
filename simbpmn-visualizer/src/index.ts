@@ -123,6 +123,15 @@ app.whenReady().then(() => {
                     message: 'Do you want to save changes?'
                 });
         });
+        ipcMain.on('askForDeleting', (event) => {
+            event.returnValue = require('electron').dialog.showMessageBoxSync(mainWindow,
+                {
+                    type: 'question',
+                    buttons: ['Yes', 'No'],
+                    title: 'Deleting',
+                    message: 'Are you sure you want to delete the project?'
+                });
+        });        
         ipcMain.on('closeApp', (event) => {
             app.quit()
         });
@@ -132,7 +141,22 @@ app.whenReady().then(() => {
         });
         ipcMain.on('isDev', (event) => {
             event.returnValue = (process.argv[2] === '--dev');
-        })
+        });
+        ipcMain.on('projectExists', (event, name) => {
+            event.returnValue = workspace.projectExists(name);
+        });
+        ipcMain.handle('renameProject', (event, oldName, newName) => {
+            workspace.renameProject(oldName, newName);
+        });
+        ipcMain.on('showMessage', (event, title, message, type) => {
+            event.returnValue = require('electron').dialog.showMessageBoxSync(mainWindow,
+                {
+                    type: type,
+                    buttons: ['Ok'],
+                    title: title,
+                    message: message
+                });
+        });
     })
 
     createWindow();
@@ -164,13 +188,10 @@ i18n.on('languageChanged', (lng: any) => {
 //----------------------------------------------------------------
 
 ipcMain.handle("scanDirectory", (event: any, path: string) => {
-    console.log("scanning Directory: " + path);
-
     return walkdir.sync(path);
 });
 
 ipcMain.handle("isDirectory", (event: any, path: string) => {
-    console.log("checking if directory" + path);
     const stats = fs.statSync(path);
     const isDirectory = !stats.isFile();
     //console.log("is directory: " + isDirectory);
@@ -203,6 +224,5 @@ ipcMain.handle("adjustResourcesInLogicRelay", (event: any, resources: []) => {
 //translations code
 //----------------------------------------------------------------
 ipcMain.handle("getTranslation", (event: any, key: string) => {
-    console.log("get translation via relay");
     return i18n.t(key);
 });

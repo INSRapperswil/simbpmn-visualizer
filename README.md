@@ -14,13 +14,19 @@ In diesem Abschnitt finden Sie verschiedene Tutorials rund um simBPMN sowie des 
 
 Dieses Tutorial legt den Weg von der BPMN zur simBPMN dar.
 
-[# Video 1 - Ausgangslage und Anforderungsanalyse](https://github.com/INSRapperswil/simbpmn-visualizer/blob/master/simbpmn-visualizer/docs/Tutorials/From%20BPMN%20to%20simBPMN/Von%20der%20BPMN%20zur%20simBPMN%20-%20Video%201%20-%20Ausgangslage%20und%20Anforderungsanalyse.mp4)
+### Video 1 - Ausgangslage und Anforderungsanalyse
+https://github.com/INSRapperswil/simbpmn-visualizer/assets/15147370/2d094645-37f4-4040-a3e4-2901ebf4a4da
 
-[# Video 2 - Kurzeinführung in die BPMN](https://github.com/INSRapperswil/simbpmn-visualizer/blob/master/simbpmn-visualizer/docs/Tutorials/From%20BPMN%20to%20simBPMN/Von%20der%20BPMN%20zur%20simBPMN%20-%20Video%202%20-%20Kurzeinf%C3%BChrung%20in%20die%20BPMN.mp4)
+### Video 2 - Kurzeinführung in die BPMN
+https://github.com/INSRapperswil/simbpmn-visualizer/assets/15147370/7cc7a23c-2039-4b5a-b719-0e6dc1d25ca6
 
-[# Video 3 - simBPMN - Ergänzungen zur BPMN](https://github.com/INSRapperswil/simbpmn-visualizer/blob/master/simbpmn-visualizer/docs/Tutorials/From%20BPMN%20to%20simBPMN/Von%20der%20BPMN%20zur%20simBPMN%20-%20Video%203%20-%20simBPMN%20-%20Erg%C3%A4nzungen%20zur%20BPMN.mp4)
+### Video 3 - simBPMN - Ergänzungen zur BPMN
+https://github.com/INSRapperswil/simbpmn-visualizer/assets/15147370/ba9228b1-4b4f-4e13-92e6-6b1eae691880
 
-[# Video 4 - Beispiel](https://github.com/INSRapperswil/simbpmn-visualizer/blob/master/simbpmn-visualizer/docs/Tutorials/From%20BPMN%20to%20simBPMN/Von%20der%20BPMN%20zur%20simBPMN%20-%20Video%204%20-%20Beispiel.mp4)
+### Video 4 - Beispiel
+https://github.com/INSRapperswil/simbpmn-visualizer/assets/15147370/8d3fe0ca-8401-49e1-8752-10375818c3f1
+
+
 
 # Links
 https://www.electronforge.io/templates/typescript-+-webpack-template

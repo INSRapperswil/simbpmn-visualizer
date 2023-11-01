@@ -35,6 +35,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   closeApp: () => ipcRenderer.sendSync("closeApp"),
   isDev: () => ipcRenderer.sendSync("isDev"),
   projectExists: (name: string) => ipcRenderer.sendSync("projectExists", name),
+  canRenameProject: (name: string) => ipcRenderer.sendSync("canRenameProject", name),
+  hasProjectAttachments: (name: string) => ipcRenderer.sendSync("hasProjectAttachments", name),
   renameProject: (oldName: string, newName: string) => ipcRenderer.invoke("renameProject", oldName, newName),
   showMessage: (title: string, message: string, type: string) => ipcRenderer.sendSync("showMessage", title, message, type)
 });

@@ -150,6 +150,15 @@ export class Sidebar {
     listControlElementRename.addEventListener("click", (event) => {
       event.stopPropagation();
 
+      if (!(window as any).electronAPI.canRenameProject(labelDiv.textContent)) {
+        (window as any).electronAPI.showMessage("Warning", "Project cannot be renamed because one or more project files are open. Please close this first and try again.", "warning");
+        return;
+      }
+
+      if ((window as any).electronAPI.hasProjectAttachments(labelDiv.textContent)) {
+        (window as any).electronAPI.showMessage("Warning", "Please make sure you have closed all project attachments.", "warning");
+      }
+
       input.style.display = "block";
       label.style.display = "none";
       children.style.display = "none";

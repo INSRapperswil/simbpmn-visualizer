@@ -126,7 +126,7 @@ export class Workspace {
                 fs.renameSync(oldPath, newPath);
                 fs.renameSync(path.join(tempPath, newProjectName + ".bpmn"), path.join(this.workspacePath, newProjectName + ".bpmn"));
 
-                
+
 
                 const oldAttachmentsPath = path.join(tempPath, projectName);
                 fs.access(oldAttachmentsPath, error => {
@@ -139,13 +139,13 @@ export class Workspace {
                         items.forEach((item) => {
                             const sourcePath = path.join(newAttachmentsPath, item);
                             const destinationPath = path.join(this.workspacePath, newProjectName, item);
-    
-    
+
+
                             fs.renameSync(sourcePath, destinationPath);
                         });
                         fs.rmdirSync(newAttachmentsPath);
                     }
-                    this.mainWindow.webContents.send('loadFolder', this.workspacePath);                    
+                    this.mainWindow.webContents.send('loadFolder', this.workspacePath);
                 });
                 return true;
             }
@@ -186,6 +186,42 @@ export class Workspace {
     projectExists(projectName: string): boolean {
         const filePath = path.join(this.workspacePath, projectName + ".bpmn");
         return fs.existsSync(filePath);
+    }
+
+    hasProjectAttachments(projectName: string): boolean {
+        const attachmentsPath = path.join(this.workspacePath, projectName);
+
+        if (!fs.existsSync(attachmentsPath)) {
+            return false;
+        }
+
+        const files = fs.readdirSync(attachmentsPath);
+        return files.length !== 0;
+    }
+
+    canRenameProject(projectName: string): boolean {
+        const attachmentsPath = path.join(this.workspacePath, projectName);
+
+        if (!fs.existsSync(attachmentsPath)) {
+            return true;
+        }
+
+        const tempPath = attachmentsPath + '_temp';
+
+        try {
+            // Versuche, das Verzeichnis umzubenennen
+            fs.renameSync(attachmentsPath, tempPath);
+
+            // Benenne es zurück, wenn das Umbenennen erfolgreich war
+            fs.renameSync(tempPath, attachmentsPath);
+
+            // Kein Fehler, also keine Datei geöffnet
+
+            return true;
+        } catch (error) {
+            // Fehler tritt auf, wahrscheinlich weil eine Datei geöffnet ist
+            return false;
+        }
     }
 
     async renameProject(oldName: string, newName: string) {

@@ -145,6 +145,12 @@ app.whenReady().then(() => {
         ipcMain.on('projectExists', (event, name) => {
             event.returnValue = workspace.projectExists(name);
         });
+        ipcMain.on('hasProjectAttachments', (event, name) => {
+            event.returnValue = workspace.hasProjectAttachments(name);
+        });
+        ipcMain.on('canRenameProject', (event, name) => {
+            event.returnValue = workspace.canRenameProject(name);
+        });
         ipcMain.handle('renameProject', (event, oldName, newName) => {
             workspace.renameProject(oldName, newName);
         });

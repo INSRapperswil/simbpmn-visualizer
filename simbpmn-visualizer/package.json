@@ -1,7 +1,7 @@
 {
   "name": "simbpmn",
   "productName": "SimBPMN Visualizer",
-  "version": "1.1.4-build.202311011",
+  "version": "1.1.5-build.202311191",
   "description": "Specification application for simbpmn notation",
   "main": ".webpack/main",
   "scripts": {

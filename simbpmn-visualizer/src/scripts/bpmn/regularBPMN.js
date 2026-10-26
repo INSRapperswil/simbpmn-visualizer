@@ -95,6 +95,7 @@ const bpmnModeler = new BpmnModeler({
   },
 });
 container.removeClass("with-diagram");
+window.simpleXflowModelers = { ...window.simpleXflowModelers, architecture: bpmnModeler };
 
 function createNewDiagram() {
   const filename = document.getElementById("filename");
@@ -105,10 +106,13 @@ function createNewDiagram() {
 
 async function openDiagram(xml) {
   try {
-    await bpmnModeler.importXML(xml);
+    _currentBusinessObject = null;
+    // Import into the visible canvas so its initial viewport has real dimensions.
     initApplication(true);
-
     container.addClass("with-diagram");
+    await bpmnModeler.importXML(xml);
+    bpmnModeler.get("canvas").resized();
+    bpmnModeler.get("canvas").zoom("fit-viewport");
   } catch (err) {
     console.error(err);
   }
@@ -221,7 +225,7 @@ window.electronAPI.onCreateXmlFile((event) => {
 });
 
 window.electronAPI.onOpenXmlFile((event, xml) => {
-  openDiagram(xml);
+  return openDiagram(xml);
 });
 
 window.onbeforeunload = (e) => {

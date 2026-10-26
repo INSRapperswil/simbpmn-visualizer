@@ -86,18 +86,19 @@ var bpmnModeler = new BpmnModeler({
   },
 });
 
+window.simpleXflowModelers = { ...window.simpleXflowModelers, logic: bpmnModeler };
+let pendingImport = Promise.resolve();
+
 createNewDiagram();
 
 function createNewDiagram() {
   opensimBPMNDiagram(diagramXML);
 }
 
-async function opensimBPMNDiagram(xml) {
-  try {
-    await bpmnModeler.importXML(xml);
-  } catch (err) {
-    console.error(err);
-  }
+function opensimBPMNDiagram(xml) {
+  pendingImport = pendingImport.then(() => bpmnModeler.importXML(xml))
+    .catch(err => console.error(err));
+  return pendingImport;
 }
 
 //------------------------------------------------------------
@@ -117,7 +118,7 @@ bpmnModeler.on("commandStack.changed", exportArtifacts);
 
 window.electronAPI.openLogic((event, xml) => {
   console.log("opening logic");
-  opensimBPMNDiagram(xml);
+  return opensimBPMNDiagram(xml);
 });
 
 eventBus.on("commandStack.connection.create.postExecuted", function (event) {
@@ -303,6 +304,13 @@ function adjustResourcesInSubprocess(shape, disconnectingResource) {
 }
 
 window.electronAPI.adjustResourcesInLogic((event, resources) => {
+  // Architecture selection starts an asynchronous import. Apply its resources
+  // only after that import; otherwise they are overwritten by the new diagram.
+  pendingImport = pendingImport.then(() => adjustResourcesInLogic(resources));
+  return pendingImport;
+});
+
+function adjustResourcesInLogic(resources) {
   console.log("adjust resources in logic: ", resources);
 
 
@@ -337,7 +345,11 @@ window.electronAPI.adjustResourcesInLogic((event, resources) => {
 
       resource.businessObject["id"] = id;
       resource.businessObject["name"] = name;
+      resource.id = id;
       modeling.createShape(resource, { x: 300 + (cnt * 50), y: 100 }, root);
+      if (colorFill || colorStroke) {
+        modeling.setColor(resource, { fill: colorFill, stroke: colorStroke });
+      }
     } else {
       if (existingResource.type != type) {
         var res = bpmnReplace.replaceElement(existingResource, { type: type }, {
@@ -375,4 +387,4 @@ window.electronAPI.adjustResourcesInLogic((event, resources) => {
     }
 
   })
-});
+}
